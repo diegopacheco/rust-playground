@@ -1,5 +1,6 @@
 mod vars;
 mod functions;
+mod structfun;
 
 fn main() {
     println!("Hello, world!");
@@ -9,5 +10,6 @@ fn main() {
     println!("addOne: {:?}",i);
     let f:fn(i32)->i32 = functions::addOne;
     println!("addOne: {:?}",f(i));
-    
+
+    structfun::printStruct();
 }
