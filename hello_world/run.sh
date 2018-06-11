@@ -1,5 +1,5 @@
 #!/bin/bash
 
-rustc main.rs
+rustc src/main.rs
 ./main
 rm -rf main
