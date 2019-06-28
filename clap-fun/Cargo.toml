@@ -1,0 +1,7 @@
+[package]
+name = "clap_fun"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+
+[dependencies]
+clap = "2.33.0"
