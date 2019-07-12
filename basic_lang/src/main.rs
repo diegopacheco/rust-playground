@@ -3,6 +3,7 @@ mod functions;
 mod structfun;
 mod enumfun;
 mod listsfun;
+mod core_data_types;
 
 fn main() {
     println!("Hello, world!");
@@ -11,4 +12,5 @@ fn main() {
     structfun::printStruct();
     enumfun::execute();
     listsfun::execute();
+    core_data_types::execute();
 }
