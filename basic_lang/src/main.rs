@@ -4,6 +4,7 @@ mod structfun;
 mod enumfun;
 mod listsfun;
 mod core_data_types;
+mod unsafe_global;
 
 fn main() {
     println!("Hello, world!");
@@ -13,4 +14,5 @@ fn main() {
     enumfun::execute();
     listsfun::execute();
     core_data_types::execute();
+    unsafe_global::execute();
 }
