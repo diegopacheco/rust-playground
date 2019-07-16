@@ -10,6 +10,7 @@ mod unsafe_global;
 mod if_stmt;
 mod loops;
 mod match_stmt;
+mod union_dt;
 
 fn main() {
     println!("Hello, world!");
@@ -23,4 +24,5 @@ fn main() {
     if_stmt::execute();
     loops::execute();
     match_stmt::execute();
+    union_dt::execute();
 }
