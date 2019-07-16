@@ -8,6 +8,7 @@ mod listsfun;
 mod core_data_types;
 mod unsafe_global;
 mod if_stmt;
+mod loops;
 
 fn main() {
     println!("Hello, world!");
@@ -19,4 +20,5 @@ fn main() {
     core_data_types::execute();
     unsafe_global::execute();
     if_stmt::execute();
+    loops::execute();
 }
