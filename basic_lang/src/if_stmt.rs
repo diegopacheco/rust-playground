@@ -5,8 +5,15 @@ pub fn execute(){
     let temperature:i16 = rng.gen_range(20, 100);
 
     if temperature<=30 {
-        println!("Super cold. Temperature: {}", temperature);
+        println!("Super COLD. Temperature: {}", temperature);
     }else {
-        println!("Super Hot. Temperature: {}", temperature);
+        println!("Super HOT. Temperature: {}", temperature);
     }
+
+    println!("Today is very: {}", 
+    if temperature<=30 {"COLD!"} else {"HOT!"});
+
+    let result = if temperature<=30 {"friu"} else {"calor"};
+    println!("hoje esta: {}",result);
+
 }
