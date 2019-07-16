@@ -9,6 +9,7 @@ mod core_data_types;
 mod unsafe_global;
 mod if_stmt;
 mod loops;
+mod match_stmt;
 
 fn main() {
     println!("Hello, world!");
@@ -21,4 +22,5 @@ fn main() {
     unsafe_global::execute();
     if_stmt::execute();
     loops::execute();
+    match_stmt::execute();
 }
