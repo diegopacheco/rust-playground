@@ -1,3 +1,5 @@
+extern crate rand;
+
 mod vars;
 mod functions;
 mod structfun;
@@ -5,6 +7,7 @@ mod enumfun;
 mod listsfun;
 mod core_data_types;
 mod unsafe_global;
+mod if_stmt;
 
 fn main() {
     println!("Hello, world!");
@@ -15,4 +18,5 @@ fn main() {
     listsfun::execute();
     core_data_types::execute();
     unsafe_global::execute();
+    if_stmt::execute();
 }
