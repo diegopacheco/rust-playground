@@ -11,6 +11,7 @@ mod if_stmt;
 mod loops;
 mod match_stmt;
 mod union_dt;
+mod option_t;
 
 fn main() {
     println!("Hello, world!");
@@ -25,4 +26,5 @@ fn main() {
     loops::execute();
     match_stmt::execute();
     union_dt::execute();
+    option_t::execute();
 }
