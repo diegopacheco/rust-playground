@@ -13,6 +13,7 @@ mod match_stmt;
 mod union_dt;
 mod option_t;
 mod array_fun;
+mod vector_fun;
 
 fn main() {
     println!("Hello, world!");
@@ -29,4 +30,5 @@ fn main() {
     union_dt::execute();
     option_t::execute();
     array_fun::execute();
+    vector_fun::execute();
 }
