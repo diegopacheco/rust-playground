@@ -14,6 +14,7 @@ mod union_dt;
 mod option_t;
 mod array_fun;
 mod vector_fun;
+mod slice_fun;
 
 fn main() {
     println!("Hello, world!");
@@ -31,4 +32,5 @@ fn main() {
     option_t::execute();
     array_fun::execute();
     vector_fun::execute();
+    slice_fun::execute();
 }
