@@ -20,6 +20,7 @@ mod tuples_fun;
 mod pattern_matecher_fun;
 mod generics_fun;
 mod closure_fun;
+mod high_order_functions;
 
 fn main() {
     println!("Hello, world!");
@@ -43,4 +44,5 @@ fn main() {
     pattern_matecher_fun::execute();
     generics_fun::execute();
     closure_fun::execute();
+    high_order_functions::execute();
 }
