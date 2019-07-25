@@ -17,6 +17,7 @@ mod vector_fun;
 mod slice_fun;
 mod strings_fun;
 mod tuples_fun;
+mod pattern_matecher_fun;
 
 fn main() {
     println!("Hello, world!");
@@ -37,4 +38,5 @@ fn main() {
     slice_fun::execute();
     strings_fun::execute();
     tuples_fun::execute();
+    pattern_matecher_fun::execute();
 }
