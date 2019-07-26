@@ -22,6 +22,7 @@ mod generics_fun;
 mod closure_fun;
 mod high_order_functions;
 mod traits_fun;
+mod dynamic_dispatch_fun;
 
 fn main() {
     println!("Hello, world!");
@@ -47,4 +48,5 @@ fn main() {
     closure_fun::execute();
     high_order_functions::execute();
     traits_fun::execute();
+    dynamic_dispatch_fun::execute();
 }
