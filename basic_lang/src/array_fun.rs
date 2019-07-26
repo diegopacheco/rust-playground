@@ -1,5 +1,5 @@
 pub fn execute(){
-    let mut a:[i32;5] = [1,2,3,4,5];
+    let a:[i32;5] = [1,2,3,4,5];
     println!("arrays: a = {} size", a.len());
 
     println!("Print all array in rust is easy: {:?}", a);

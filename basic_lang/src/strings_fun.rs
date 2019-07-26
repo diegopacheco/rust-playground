@@ -13,8 +13,8 @@ pub fn execute(){
         println!("{}",c);
     }
 
-    if let Some(firstChar) = s.chars().nth(0){
-        println!("First char == {}",firstChar);
+    if let Some(first_char) = s.chars().nth(0){
+        println!("First char == {}",first_char);
     }
 
     

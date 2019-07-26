@@ -8,20 +8,31 @@ enum Work {
     Soldier,
 }
 
+use self::Status::{Poor, Rich};
+use self::Work::{Civilian,Soldier};
+
 pub fn execute() {
-    use self::Status::{Poor, Rich};
-    use self::Work::*;
+    let mut status:Status = Poor;
+    check_status(status);
+    status = Rich;
+    check_status(status);
 
-    let status = Poor;
-    let work = Civilian;
+    let mut work:Work = Soldier; 
+    check_work(work);
+    work = Civilian; 
+    check_work(work);
+}
 
-    match status {
-        Rich => println!("The rich have lots of money!"),
-        Poor => println!("The poor have no money..."),
-    }
-
-    match work {
+fn check_work(w:Work){
+   match w {
         Civilian => println!("Civilians work!"),
         Soldier  => println!("Soldiers fight!"),
+    }
+}
+
+fn check_status(s:Status){
+    match s {
+        Rich => println!("The rich have lots of money!"),
+        Poor => println!("The poor have no money..."),
     }
 }

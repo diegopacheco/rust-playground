@@ -6,6 +6,7 @@ pub fn execute(){
     println!("x: {}, y: {}", x,y);
 
     let mut z = 10;
+    println!("Z is muutable: {}",z);
     z = 30;
     println!("Z is muutable: {}",z);
 }

@@ -21,12 +21,13 @@ mod pattern_matecher_fun;
 mod generics_fun;
 mod closure_fun;
 mod high_order_functions;
+mod traits_fun;
 
 fn main() {
     println!("Hello, world!");
     vars::execute();
     functions::execute();
-    structfun::printStruct();
+    structfun::print_struct();
     enumfun::execute();
     listsfun::execute();
     core_data_types::execute();
@@ -45,4 +46,5 @@ fn main() {
     generics_fun::execute();
     closure_fun::execute();
     high_order_functions::execute();
+    traits_fun::execute();
 }

@@ -3,7 +3,6 @@ union IntOrFloat {
     f:f32
 }
 
-
 pub fn execute(){
 
     let mut iof = IntOrFloat { i: 10};
@@ -19,7 +18,7 @@ pub fn execute(){
                 IntOrFloat{i:42} => {
                     println!("the Awnser for life");
                 }
-                IntOrFloat{f} => {
+                IntOrFloat{f:_} => {
                     println!("You regular f == {}", iof.f);
                 }
             }

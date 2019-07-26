@@ -14,7 +14,7 @@ impl Display for City {
     }
 }
 
-pub fn printStruct(){
+pub fn print_struct(){
     for city in [
         City { name: "Dublin", lat: 53.347778, lon: -6.259722 },
         City { name: "Oslo", lat: 59.95, lon: 10.75 },

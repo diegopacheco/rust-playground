@@ -12,6 +12,6 @@ pub fn execute(){
     b=42;
     print!(" b = {}",b);
 
-    let mut c = 123456789;
+    let c = 123456789;
     print!(" c = {} size {} bytes",c,mem::size_of_val(&c));
 }

@@ -1,6 +1,6 @@
 pub fn execute(){
-    let countryCode = 44;
-    let country = match countryCode {
+    let country_code = 44;
+    let country = match country_code {
         1  => "USA",
         44 => "UK",
         55 => "Brazil",

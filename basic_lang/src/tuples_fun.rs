@@ -1,5 +1,5 @@
 pub fn execute(){
-    let result = sumAndProduct(2,3);
+    let result = sum_and_product(2,3);
     println!("Tuple Result is: {:?}", result);
     println!("Tuple Result is: {0} {1}", result.0, result.1);
 
@@ -8,6 +8,6 @@ pub fn execute(){
     println!("Tuple Result is: {0} {1}", x,y);
 }
 
-fn sumAndProduct(x:i32,y:i32) -> (i32,i32){
+fn sum_and_product(x:i32,y:i32) -> (i32,i32){
     (x+y,x*y)
 }

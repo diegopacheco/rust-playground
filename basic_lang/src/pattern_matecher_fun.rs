@@ -1,6 +1,6 @@
 pub fn execute(){
 
-    fn haveSome(i:i32) -> &'static str{
+    fn have_some(i:i32) -> &'static str{
         match i {
             0             => "no",
             1 | 2         => "some",
@@ -11,6 +11,6 @@ pub fn execute(){
     }
 
     for i in 1..13{
-        println!("{}: I have {} apples.",i,haveSome(i));
+        println!("{}: I have {} apples.",i,have_some(i));
     }
 }

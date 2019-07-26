@@ -7,10 +7,10 @@ pub fn execute(){
         fold(0, |sum, x| sum + x);
     println!("High Order Functions in Rsut == {}", sum);
 
-    fn isEven(n:i32) -> 
+    fn is_even(n:i32) -> 
     impl Fn() -> bool {
         move || n%2==0
     }
-    println!("High Order Function is Rust = {}",isEven(2)());
+    println!("High Order Function is Rust = {}",is_even(2)());
 
 }
