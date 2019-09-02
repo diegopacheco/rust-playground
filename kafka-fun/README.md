@@ -1,4 +1,8 @@
 ### Build
 ```bash
-cargo build
+docker-compose up
+./create-topic.sh
+./produce-messages.sh
+cargo run
+./read-messages.sh
 ```
