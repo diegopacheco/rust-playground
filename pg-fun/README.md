@@ -1,6 +1,6 @@
 ### Build
 ```bash
-run-postgres.sh
+./run-postgres.sh
 cargo build
 cargo run
 ```
