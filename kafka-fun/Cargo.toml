@@ -1,0 +1,8 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+
+[dependencies]
+kafka = "0.7"
+env_logger = "0.6.2"
