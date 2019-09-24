@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: rust_service
+  name: rustapp
 spec:
   selector:
     matchLabels:
-      app: rust_service
+      app: rustapp
   replicas: 1
   template:
     metadata:
       labels:
-        app: rust_service
+        app: rustapp
     spec:
       containers:
-      - name: rust_service
-        image: diegopacheco/rust_service:latest
+      - name: rustapp
+        image: diegopacheco/rust_service
         env:
         - name: RUST_SVC_VERSION
           value: "1"        
