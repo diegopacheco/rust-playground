@@ -1,4 +1,6 @@
 ### Build
 ```bash
-cargo build
+./release-rust.sh
+./docker-build.sh
+./run.sh
 ```
