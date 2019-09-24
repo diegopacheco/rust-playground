@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker run --rm diegopacheco/rust_service
+docker run --rm diegopacheco/rust_service:latest

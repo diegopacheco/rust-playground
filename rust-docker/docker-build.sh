@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t diegopacheco/rust_service .
+docker build --no-cache -t diegopacheco/rust_service .
