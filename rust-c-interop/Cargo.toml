@@ -1,0 +1,11 @@
+[package]
+name = "rust-to-c"
+version = "0.1.0"
+authors = ["Diego Pacheco <diego.pacheco.it@gmail.com>"]
+build = "build.rs"
+
+[dependencies]
+libc = "0.2"
+
+[build-dependencies]
+cc = "1.0"
