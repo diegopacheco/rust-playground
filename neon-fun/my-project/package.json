@@ -1,0 +1,14 @@
+{
+  "name": "my-project",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/index.js",
+  "author": "Diego Pacheco <diego.pacheco.it@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "neon-cli": "^0.3.1"
+  },
+  "scripts": {
+    "install": "neon build"
+  }
+}
