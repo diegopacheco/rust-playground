@@ -1,0 +1,12 @@
+[package]
+# lib name for Java
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+jni = "0.13.1"
+
+[lib]
+crate_type = ["cdylib"]
