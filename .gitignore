@@ -11,3 +11,4 @@ Cargo.lock
 **/*.rs.bk
 
 zk-single-kafka-single/
+*.class
