@@ -1,0 +1,6 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+
+[dependencies]
