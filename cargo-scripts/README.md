@@ -2,8 +2,9 @@
 ```bash
 cargo install cargo-script
 ```
+
 ### Run
 ```bash
-chmod +x anyScript.crs 
-./anyScript.crs
+chmod +x now.crs
+./now.crs
 ```
