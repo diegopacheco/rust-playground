@@ -6,5 +6,4 @@ pub fn execute(){
     unsafe{
         println!("\nKids this is unsafe == {}", COUNTER);
     }
-    
 }
