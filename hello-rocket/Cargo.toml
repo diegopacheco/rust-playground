@@ -1,0 +1,8 @@
+[package]
+name = "hello-rocket"
+version = "0.1.0"
+authors = ["Diego Pacheco <diego.pacheco.it@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rocket = "0.4.2"
