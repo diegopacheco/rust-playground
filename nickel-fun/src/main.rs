@@ -10,6 +10,5 @@ fn main() {
         }
     });
 
-    let r = server.listen("127.0.0.1:6767");
-    println!("{:?}",r);
+    let _ = server.listen("127.0.0.1:6767");
 }
