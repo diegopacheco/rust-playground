@@ -1,0 +1,22 @@
+[package]
+name = "helloworld-tonic"
+version = "0.1.0"
+edition = "2018"
+
+[[bin]] # Bin to run the HelloWorld gRPC server
+name = "helloworld-server"
+path = "src/server.rs"
+
+[[bin]] # Bin to run the HelloWorld gRPC client
+name = "helloworld-client"
+path = "src/client.rs"
+
+[dependencies]
+tonic = "0.1.0-alpha.5"
+bytes = "0.4"
+prost = "0.5"
+prost-derive = "0.5"
+tokio = "=0.2.0-alpha.6"
+
+[build-dependencies]
+tonic-build = "0.1.0-alpha.5"
