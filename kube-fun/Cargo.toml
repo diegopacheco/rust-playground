@@ -1,0 +1,14 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+futures = "0.3.1"
+log = "0.4.8"
+serde_json = "1.0.44"
+env_logger = "0.7.1"
+tokio = { version = "0.2.6", features = ["full"] }
+kube = { version = "0.23.0", features = ["openapi"] }
+k8s-openapi = { version = "0.6.0", default-features = false, features = ["v1_16"] }
