@@ -10,7 +10,8 @@ use tui::layout::{Constraint, Layout};
 use tui::style::{Color, Modifier, Style};
 use tui::widgets::{Block, Borders, Row, Table, Widget};
 use tui::Terminal;
-mod event;
+
+#[path = "../event/mod.rs"] mod event;
 
 struct App<'a> {
     items: Vec<Vec<&'a str>>,

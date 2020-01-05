@@ -13,3 +13,11 @@ failure = "0.1"
 [[bin]]
 name = "table"
 path = "src/table/main.rs"
+
+[[bin]]
+name = "layout"
+path = "src/layout/main.rs"
+
+[[bin]]
+name = "chart"
+path = "src/chart/main.rs"
