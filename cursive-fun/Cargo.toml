@@ -25,3 +25,7 @@ path = "src/listview/main.rs"
 [[bin]]
 name = "userdata"
 path = "src/userdata/main.rs"
+
+[[bin]]
+name = "radio"
+path = "src/radio/main.rs"
