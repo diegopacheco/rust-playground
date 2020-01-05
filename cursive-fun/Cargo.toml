@@ -5,3 +5,23 @@ authors = ["Diego.Pacheco"]
 
 [dependencies]
 cursive = "0.13"
+
+[[bin]]
+name = "dialog"
+path = "src/dialog/main.rs"
+
+[[bin]]
+name = "textarea"
+path = "src/textarea/main.rs"
+
+[[bin]]
+name = "select"
+path = "src/select/main.rs"
+
+[[bin]]
+name = "listview"
+path = "src/listview/main.rs"
+
+[[bin]]
+name = "userdata"
+path = "src/userdata/main.rs"
