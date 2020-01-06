@@ -6,6 +6,8 @@ edition = "2018"
 
 [dependencies]
 crossbeam = "0.7.3"
+threadpool = "1.7.1"
+num = "0.2.0"
 lazy_static = "1.4.0"
 
 [[bin]]
@@ -15,3 +17,7 @@ path = "src/simple/main.rs"
 [[bin]]
 name = "global"
 path = "src/global/main.rs"
+
+[[bin]]
+name = "threadpool"
+path = "src/threadpool/main.rs"
