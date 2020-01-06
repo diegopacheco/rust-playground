@@ -6,3 +6,12 @@ edition = "2018"
 
 [dependencies]
 crossbeam = "0.7.3"
+lazy_static = "1.4.0"
+
+[[bin]]
+name = "simple"
+path = "src/simple/main.rs"
+
+[[bin]]
+name = "global"
+path = "src/global/main.rs"
