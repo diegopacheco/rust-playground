@@ -5,4 +5,4 @@ authors = ["Diego.Pacheco"]
 edition = "2018"
 
 [dependencies]
-clap = "2.33.0" 
+news-contract = { path = "../news-contract" }

@@ -1,10 +1,7 @@
 extern crate news_contract;
+extern crate news_dao;
 use news_contract::News;
 
 pub fn list_news() -> Option<News> {
-    let news = News { id: 1, 
-                      desc: String::from("rust kick add"),
-                      url: String::from("http://localhost:8080/news"),
-                    };
-    return Some(news);
+  return news_dao::list_news();
 }
