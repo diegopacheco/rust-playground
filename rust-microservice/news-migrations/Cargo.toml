@@ -6,3 +6,4 @@ edition = "2018"
 
 [dependencies]
 barrel = { version="0.6.4", features = ["pg"] }
+postgres = "0.17.0"
