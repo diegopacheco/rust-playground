@@ -10,7 +10,7 @@ pub fn connect() -> postgres::Client {
 
 pub fn list_news() -> Option<Vec<News>> {
   //let mut client = connect();
-  let mut vec_news = Vec::new();
+  let mut vec_news = Vec::new();  
   /*
   for row in &client.query("SELECT * FROM news", &[]).unwrap() {
     let news = News {
