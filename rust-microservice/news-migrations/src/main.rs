@@ -12,5 +12,5 @@ fn main() {
         t.add_column("desc", types::varchar(255));
         t.add_column("url", types::varchar(255));
     });
-    println!("{:?}", m.make::<Pg>());
+    println!("{}", m.make::<Pg>());
 }
