@@ -5,7 +5,6 @@ extern crate uuid;
 use news_contract::News;
 use tokio_postgres::{NoTls};
 use tokio;
-use uuid::Uuid;
 
 pub async fn list_news() -> Option<Vec<News>> {
 
@@ -20,10 +19,10 @@ pub async fn list_news() -> Option<Vec<News>> {
   });      
 
   let mut vec_news = Vec::new();  
-  let rows = &client.query("SELECT * FROM news", &[]).await.unwrap();
+  let rows = &client.query("SELECT id::text,url,'desc' FROM news", &[]).await.unwrap();
   for row in rows {
-    let news = News {
-        id:   Uuid::parse_str(row.get(0)).unwrap().to_hyphenated().to_string(),
+    let news = News { 
+        id:   row.get(0),
         desc: row.get(1),
         url:  row.get(2),
     };
