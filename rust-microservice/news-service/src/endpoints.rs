@@ -10,6 +10,5 @@ async fn index() -> impl Responder {
 #[get("/news")]
 async fn list_news() -> HttpResponse  {
     let news:Vec<News> = service::list_news().unwrap();
-    let json:String = serde_json::to_string(&news).unwrap();
-    HttpResponse::Ok().json(json)
+    HttpResponse::Ok().json(news)
 }
