@@ -6,3 +6,4 @@ edition = "2018"
 
 [dependencies]
 news-contract = { path = "../news-contract" }
+postgres = "0.17.0"

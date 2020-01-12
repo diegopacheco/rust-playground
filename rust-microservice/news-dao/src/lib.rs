@@ -1,10 +1,23 @@
 extern crate news_contract;
-use news_contract::News;
+extern crate postgres;
 
-pub fn list_news() -> Option<News> {
-    let news = News { id: 1, 
-        desc: String::from("rust kick add"),
-        url: String::from("http://localhost:8080/news"),
-      };
-    return Some(news);
+use news_contract::News;
+use postgres::{Client,NoTls};
+
+pub fn connect() -> postgres::Client {
+  Client::connect("postgres://postgres:docker@172.17.0.2:5432/postgres", NoTls).unwrap()
+}
+
+pub fn list_news() -> Option<Vec<News>> {
+  let mut client = connect();
+  let mut vec_news = Vec::new();
+  for row in &client.query("SELECT * FROM news", &[]).unwrap() {
+    let news = News {
+        id: row.get(0),
+        desc: row.get(1),
+        url: row.get(2),
+    };
+    vec_news.push(news);
+  }
+  return Some(vec_news);
 }

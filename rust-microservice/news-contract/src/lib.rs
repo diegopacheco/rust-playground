@@ -6,7 +6,7 @@ use std::fmt::{self, Formatter, Display};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct News{
-    pub id:i64,
+    pub id:String,
     pub desc:String,
     pub url:String,
 }
