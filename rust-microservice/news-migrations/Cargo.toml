@@ -1,0 +1,8 @@
+[package]
+name = "news-migrations"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+barrel = "0.6.4"

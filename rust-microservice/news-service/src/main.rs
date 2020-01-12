@@ -1,19 +1,13 @@
-use actix_web::{get, web, App, HttpServer, Responder,HttpResponse};
-mod service;
-
-#[get("/")]
-async fn index() -> impl Responder {
-    format!("Endpoints: /news ")
-}
-
-#[get("/news")]
-async fn list_news() -> impl Responder {
-    format!("{}",service::list_news().unwrap())
-}
+#[macro_use] extern crate log;
+extern crate env_logger;
+mod endpoints;
+use endpoints::*;
+use actix_web::{App, HttpServer};
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
-    println!("Rust Actix Server running... http://localhost:8080/");
+    env_logger::init();
+    info!("Rust Actix Server running... http://localhost:8080/");
     HttpServer::new(|| App::new()
         .service(index)
         .service(list_news))

@@ -4,7 +4,8 @@ cargo build
 ```
 ### Run
 ```bash
-cargo run
+./run-docker-postgress.sh
+RUST_LOG=info cargo run --bin news-service
 ```
 ### Test it
 ```bash

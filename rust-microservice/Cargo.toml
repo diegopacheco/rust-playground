@@ -2,5 +2,6 @@
 members = [
     "news-service",
     "news-contract",
-    "news-dao"
+    "news-dao",
+    "news-migrations"
 ]
