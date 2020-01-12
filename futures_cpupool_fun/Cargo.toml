@@ -1,0 +1,9 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+futures = {version="0.1",futures=["futures_api"]}
+futures-cpupool = "0.1"
