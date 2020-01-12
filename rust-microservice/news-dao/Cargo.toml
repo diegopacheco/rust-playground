@@ -9,3 +9,4 @@ news-contract = { path = "../news-contract" }
 postgres = "0.17.0"
 actix-web = "2.0.0"
 actix-rt = "1.0.0"
+futures = "0.3.1"

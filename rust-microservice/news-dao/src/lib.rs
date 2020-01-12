@@ -4,13 +4,12 @@ extern crate actix_web;
 
 use news_contract::News;
 use postgres::{Client,NoTls};
-use actix_web::{web};
 
 pub fn connect() -> postgres::Client {
   Client::connect("postgres://postgres:docker@172.17.0.2:5432/postgres", NoTls).unwrap()
 }
 
-pub fn list_news() -> Option<Vec<News>> {
+pub async fn list_news() -> Option<Vec<News>> {
   /*
     let mut client = connect();
     let mut vec_news = Vec::new();  
@@ -24,11 +23,18 @@ pub fn list_news() -> Option<Vec<News>> {
     }
     return Some(vec_news);
   */
+  
   let mut vec_news = Vec::new();  
   vec_news.push(News {
     id: String::from("1234"),
     desc: String::from("google"),
     url: String::from("google.com")
   });
+  vec_news.push(News {
+    id: String::from("1234"),
+    desc: String::from("google"),
+    url: String::from("google.com")
+  });
   return Some(vec_news);
+  
 }
