@@ -1,29 +1,36 @@
 extern crate news_contract;
-extern crate postgres;
-extern crate actix_web;
+extern crate tokio_postgres;
+extern crate uuid;
 
 use news_contract::News;
-use postgres::{Client,NoTls};
-
-pub fn connect() -> postgres::Client {
-  Client::connect("postgres://postgres:docker@172.17.0.2:5432/postgres", NoTls).unwrap()
-}
+use tokio_postgres::{NoTls};
+use tokio;
+use uuid::Uuid;
 
 pub async fn list_news() -> Option<Vec<News>> {
-  /*
-    let mut client = connect();
-    let mut vec_news = Vec::new();  
-    for row in &client.query("SELECT * FROM news", &[]).unwrap() {
-      let news = News {
-          id: row.get(0),
-          desc: row.get(1),
-          url: row.get(2),
-      };
-      vec_news.push(news);
-    }
-    return Some(vec_news);
-  */
+
+  let (client,conn) =
+        tokio_postgres::connect("host=172.17.0.2 user=postgres password=docker dbname=postgres port=5432", NoTls).
+        await.unwrap();
   
+  tokio::spawn(async move {
+      if let Err(e) = conn.await {
+          eprintln!("connection error: {}", e);
+      }
+  });      
+
+  let mut vec_news = Vec::new();  
+  let rows = &client.query("SELECT * FROM news", &[]).await.unwrap();
+  for row in rows {
+    let news = News {
+        id:   Uuid::parse_str(row.get(0)).unwrap().to_hyphenated().to_string(),
+        desc: row.get(1),
+        url:  row.get(2),
+    };
+    vec_news.push(news);
+  }
+  return Some(vec_news);
+  /*
   let mut vec_news = Vec::new();  
   vec_news.push(News {
     id: String::from("1234"),
@@ -36,5 +43,5 @@ pub async fn list_news() -> Option<Vec<News>> {
     url: String::from("google.com")
   });
   return Some(vec_news);
-  
+  */
 }

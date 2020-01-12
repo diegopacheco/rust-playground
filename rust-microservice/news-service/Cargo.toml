@@ -9,6 +9,7 @@ news-contract = { path = "../news-contract" }
 news-dao      = { path = "../news-dao" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.44" 
+actix = "0.9.0"
 actix-web = "2.0.0"
 actix-rt = "1.0.0"
 env_logger = "0.7.1"
