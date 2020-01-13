@@ -30,6 +30,12 @@ pub async fn get_news_by_id(id:&String) -> Option<News> {
   return Some(news);
 }
 
+pub async fn delete_news_by_id(id:&String) -> Option<bool> {
+  let client = connect().await.unwrap();
+  let _rows = &client.query("DELETE FROM news where id::text=$1", &[&id]).await.unwrap();
+  return Some(true);
+}
+
 pub async fn insert_news(url:&String,desc:&String) -> Option<News> {
   let client = connect().await.unwrap();
   let _row = client.query("INSERT INTO news VALUES(uuid_in(md5(random()::text || clock_timestamp()::text)::cstring),$1,$2)",&[&desc,&url]).await.unwrap();

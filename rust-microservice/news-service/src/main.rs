@@ -19,6 +19,7 @@ async fn main() -> std::io::Result<()> {
         .service(list_news)
         .service(insert_news)
         .service(get_news_by_id)
+        .service(delete_news_by_id)
     )
     .bind("127.0.0.1:8080")?
     .run()

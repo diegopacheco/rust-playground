@@ -1,4 +1,4 @@
-use actix_web::{get,put,Responder,HttpResponse,web};
+use actix_web::{get,put,delete,Responder,HttpResponse,web};
 #[path="service.rs"] mod service;
 
 #[get("/")]
@@ -19,6 +19,16 @@ pub async fn get_news_by_id(info:web::Path<String>) -> HttpResponse  {
     new_string.push_str(id);
 
     let news = service::get_news_by_id(&new_string).await;
+    HttpResponse::Ok().json(news)
+}
+
+#[delete("/news/{id}")]
+pub async fn delete_news_by_id(info:web::Path<String>) -> HttpResponse {
+    let id  = &info.as_str();
+    let mut new_string = String::new();
+    new_string.push_str(id);
+
+    let news = service::delete_news_by_id(&new_string).await;
     HttpResponse::Ok().json(news)
 }
 

@@ -3,8 +3,12 @@ extern crate news_dao;
 
 use news_contract::News;
 
-pub async fn get_news_by_id(uuid:&String) -> Option<News> {
-  return news_dao::get_news_by_id(uuid).await;
+pub async fn get_news_by_id(id:&String) -> Option<News> {
+  return news_dao::get_news_by_id(id).await;
+}
+
+pub async fn delete_news_by_id(id:&String) -> Option<bool> {
+  return news_dao::delete_news_by_id(id).await;
 }
 
 pub async fn list_news() -> Option<Vec<News>> {
