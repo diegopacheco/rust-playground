@@ -7,7 +7,22 @@ use tokio_postgres::{NoTls};
 use tokio;
 
 pub async fn insert_news(url:&String,desc:&String) -> Option<News> {
-  Some(News{id:String::from("1"),desc:String::from("face"),url:String::from("fb.com")})
+  let (client,conn) =
+        tokio_postgres::connect("host=172.17.0.2 user=postgres password=docker dbname=postgres port=5432", NoTls).
+        await.unwrap();
+  tokio::spawn(async move {
+      if let Err(e) = conn.await {
+          eprintln!("connection error: {}", e);
+      }
+  });
+  
+  let _row = client.query("INSERT INTO news VALUES(uuid_in(md5(random()::text || clock_timestamp()::text)::cstring),$1,$2)",&[&desc,&url]).await.unwrap();
+  let news = News {
+    id: String::from("0"),
+    desc: String::from(desc),
+    url: String::from(url),
+  };
+  return Some(news);
 }
 
 pub async fn list_news() -> Option<Vec<News>> {
