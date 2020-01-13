@@ -16,3 +16,19 @@ impl Display for News {
         write!(f, "{}:{}:{}",self.id, self.desc, self.url)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_display() {
+        let n = News{
+            id:String::from("1"),
+            desc:String::from("google"),
+            url:String::from("google.com"),
+        };
+        println!("{}",n);
+    }
+
+}
