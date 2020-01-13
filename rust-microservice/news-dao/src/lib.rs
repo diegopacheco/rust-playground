@@ -20,7 +20,7 @@ pub async fn connect() -> Option<tokio_postgres::Client> {
 
 pub async fn get_news_by_id(id:&String) -> Option<News> {
   let client = connect().await.unwrap();
-  let rows = &client.query("SELECT id::text,url,'desc' FROM news where id=$1", &[&id]).await.unwrap();
+  let rows = &client.query("SELECT id::text,url,'desc' FROM news where id::text=$1", &[&id]).await.unwrap();
   let row = rows.get(0).unwrap();
     let news = News { 
         id:   row.get(0),
