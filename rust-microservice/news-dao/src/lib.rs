@@ -18,6 +18,15 @@ pub async fn connect() -> Option<tokio_postgres::Client> {
   return Some(client);
 }
 
+pub async fn get_news_by_id(id:&String) -> Option<News> {
+  let n = News{
+    id: String::from("1234"),
+    desc: String::from("google"),
+    url: String::from("google.com")
+  };
+  return Some(n);
+}
+
 pub async fn insert_news(url:&String,desc:&String) -> Option<News> {
   let client = connect().await.unwrap();
   let _row = client.query("INSERT INTO news VALUES(uuid_in(md5(random()::text || clock_timestamp()::text)::cstring),$1,$2)",&[&desc,&url]).await.unwrap();

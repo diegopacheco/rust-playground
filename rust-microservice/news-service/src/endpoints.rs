@@ -12,6 +12,16 @@ pub async fn list_news() -> HttpResponse  {
     HttpResponse::Ok().json(news)
 }
 
+#[get("/news/{id}")]
+pub async fn get_news_by_id(info:web::Path<String>) -> HttpResponse  {
+    let id  = &info.as_str();
+    let mut new_string = String::new();
+    new_string.push_str(id);
+
+    let news = service::get_news_by_id(&new_string).await;
+    HttpResponse::Ok().json(news)
+}
+
 #[put("/news/{url}/{desc}")]
 pub async fn insert_news(info:web::Path<(String, String)>) -> impl Responder {
     let url  = &info.0;
