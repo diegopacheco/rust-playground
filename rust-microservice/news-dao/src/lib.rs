@@ -19,12 +19,15 @@ pub async fn connect() -> Option<tokio_postgres::Client> {
 }
 
 pub async fn get_news_by_id(id:&String) -> Option<News> {
-  let n = News{
-    id: String::from("1234"),
-    desc: String::from("google"),
-    url: String::from("google.com")
-  };
-  return Some(n);
+  let client = connect().await.unwrap();
+  let rows = &client.query("SELECT id::text,url,'desc' FROM news where id=$1", &[&id]).await.unwrap();
+  let row = rows.get(0).unwrap();
+    let news = News { 
+        id:   row.get(0),
+        desc: row.get(2),
+        url:  row.get(1),
+    };
+  return Some(news);
 }
 
 pub async fn insert_news(url:&String,desc:&String) -> Option<News> {
