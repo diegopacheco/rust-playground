@@ -17,6 +17,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| App::new()
         .service(index)
         .service(list_news)
+        .service(insert_news)
     )
     .bind("127.0.0.1:8080")?
     .run()

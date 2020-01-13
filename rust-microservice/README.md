@@ -9,5 +9,6 @@ RUST_LOG=info cargo run --bin news-service
 ```
 ### Test it
 ```bash
-curl http://localhost:8080/news
+curl -s http://localhost:8080/news | jq .
+curl -s -X PUT "http://localhost:8080/news/facebook/faceboo.com"
 ```
