@@ -1,0 +1,19 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+sqlx = { version = "0.1.4", features = [ "postgres" ]}
+sqlx-core = { version = "=0.1.4" }
+sqlx-macros = { version = "0.1.1"}
+tide = "0.5.1"
+serde = { version = "1.0.104", features = [ "derive" ] }
+rand = "0.7.2"
+anyhow = "1.0.26"
+chrono = "0.4.10"
+jsonwebtoken = "6.0.1"
+rust-argon2 = "0.6.1"
+futures = "0.3.1"
+async-std = { version = "1.4.0", features = [ "attributes" ] }
