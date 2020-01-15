@@ -1,0 +1,8 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+boxing-arena = "0.9.2" 
