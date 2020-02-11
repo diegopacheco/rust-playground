@@ -18,6 +18,7 @@ echo "[package]
 name = \"main\"
 version = \"1.0.0\"
 authors = [\"Diego.Pacheco\"]
+edition = \"2018\"
 
 [dependencies]
 clap = \"2.33.0\" " > Cargo.toml
