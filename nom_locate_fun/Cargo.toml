@@ -1,0 +1,9 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+nom = "5.1.0"
+nom_locate = "1.0.0"
