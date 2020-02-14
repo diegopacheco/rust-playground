@@ -1,0 +1,13 @@
+[tasks.A]
+dependencies = ["B", "C"]
+
+[tasks.B]
+dependencies = ["D"]
+
+[tasks.C]
+dependencies = ["D"]
+
+[tasks.D]
+script = [
+    "echo hello"
+]
