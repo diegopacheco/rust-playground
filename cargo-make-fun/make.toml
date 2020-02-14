@@ -26,11 +26,12 @@ script = [
 '''
 //! ```cargo
 //! [dependencies]
-//! time = "*"
+//! time = "0.2.6"
 //! ```
 extern crate time;
+use time::Time;
 fn main() {
-    println!("{}", time::now().rfc822z());
+    println!("{:?}", Time::now());
 }
 '''
 ]
