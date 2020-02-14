@@ -11,3 +11,11 @@ dependencies = ["D"]
 script = [
     "echo hello"
 ]
+
+[tasks.code]
+script_runner = "@duckscript"
+script = [
+'''
+ls -lsa
+'''
+]
