@@ -21,7 +21,7 @@ impl Shape for Circle {
 
 pub fn execute() 
 {
-  let shapes:[&Shape; 4] = [
+  let shapes:[&dyn Shape; 4] = [
     &Circle{radius: 1.0},
     &Square{side: 3.0},
     &Circle{radius: 2.0},
