@@ -1,0 +1,10 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+xactor = "0.2.3" 
+async-trait = "0.1.24"
+async-std = { version = "1.4.0", features = ["default","attributes","std","unstable"] }
