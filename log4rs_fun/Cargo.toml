@@ -1,0 +1,9 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+log4rs = "0.10.0"
+log = "0.4.8"
