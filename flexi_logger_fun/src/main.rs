@@ -13,18 +13,12 @@ impl fmt::Display for Struct {
 }
 
 fn main() {
-    // --------------------------------
     println!("flexi_logger");
     flexi_logger::Logger::with_str("off")
         .format(flexi_logger::detailed_format)
         .start()
         .unwrap();
-    // --------------------------------
-    // $> Set-Item -Path Env:RUST_LOG -Value "trace"
-    // println!("env_logger");
-    // env_logger::init();
-    // $> Set-Item -Path Env:RUST_LOG
-    // --------------------------------
+
     let mut structs = Vec::new();
     for i in 0..100 {
         structs.push(Struct {
