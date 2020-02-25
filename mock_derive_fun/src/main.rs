@@ -1,4 +1,3 @@
-#![feature(proc_macro)]
 extern crate mock_derive;
 
 use mock_derive::mock;
@@ -9,7 +8,6 @@ pub struct Foo {}
 
 #[mock]
 pub trait CustomTrait {
-    fn new() -> Foo;
     fn get_int(&self) -> u32;
     fn opt_int(&self) -> Option<u32>;
     fn default_method(&self, x: i32, y: i32) -> i32 {
@@ -18,9 +16,6 @@ pub trait CustomTrait {
 }
 
 impl CustomTrait for Foo {
-    fn new() -> Foo {
-        Foo { }
-    }
     fn get_int(&self) -> u32 {
         return 1;
     }
