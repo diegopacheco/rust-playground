@@ -1,0 +1,9 @@
+---
+source: src/main.rs
+expression: value
+---
+[
+    1,
+    2,
+    3,
+]
