@@ -11,13 +11,20 @@ rust-playground is a set of rust useful code and poc.
 * https://github.com/diegopacheco/rust-playground/tree/master/hyper-fun
 * https://github.com/diegopacheco/rust-playground/tree/master/nickel-fun
 * https://github.com/diegopacheco/rust-playground/tree/master/reqwest-fun
+* https://github.com/diegopacheco/rust-playground/tree/master/tokyo-fun
+* https://github.com/diegopacheco/rust-playground/tree/master/tide-fun
 
 ## Testing
 
 #### Assertions, Property Testing, Snapshoting, BDD
 
 * https://github.com/diegopacheco/rust-playground/tree/master/quickcheck_fun
-* 
+* https://github.com/diegopacheco/rust-playground/tree/master/test_cucumber_fun
+* https://github.com/diegopacheco/rust-playground/tree/master/test_especulate_fun
+* https://github.com/diegopacheco/rust-playground/tree/master/test_insta_fun
+* https://github.com/diegopacheco/rust-playground/tree/master/test_mutagen_fun
+* https://github.com/diegopacheco/rust-playground/tree/master/test_proptest_fun
+* https://github.com/diegopacheco/rust-playground/tree/master/test_quickcheck
 
 #### Mock
 
@@ -35,3 +42,5 @@ rust-playground is a set of rust useful code and poc.
 * https://github.com/diegopacheco/rust-playground/tree/master/pg-fun
 * https://github.com/diegopacheco/rust-playground/tree/master/redis-fun
 * https://github.com/diegopacheco/rust-playground/tree/master/rocksdb-fun
+* https://github.com/diegopacheco/rust-playground/tree/master/sqlite-fun
+* https://github.com/diegopacheco/rust-playground/tree/master/sqlx-fun
