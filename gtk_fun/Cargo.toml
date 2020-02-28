@@ -1,0 +1,9 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+gtk = "0.8.1"
+gio = "0.8.1"
