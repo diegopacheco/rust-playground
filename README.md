@@ -2,8 +2,6 @@
 
 rust-playground is a set of rust useful code and poc.
 
-![rust] ![cargo]
-
 ## Microservice
 
 * https://github.com/diegopacheco/rust-playground/tree/master/rust-microservice
