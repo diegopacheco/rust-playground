@@ -1,5 +1,4 @@
 fn main() {
-
     moved_values_borrowing_to_fix();
     moving();
 }
