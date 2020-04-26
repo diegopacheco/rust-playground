@@ -12,3 +12,5 @@ Cargo.lock
 
 zk-single-kafka-single/
 *.class
+
+.idea/
