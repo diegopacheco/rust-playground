@@ -14,3 +14,4 @@ zk-single-kafka-single/
 *.class
 
 .idea/
+stale_outputs_checked
