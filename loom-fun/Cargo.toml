@@ -1,0 +1,9 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+loom = "0.3"
+#[target.'cfg(loom)'.dependencies]
