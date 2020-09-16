@@ -1,4 +1,0 @@
-### Build
-```bash
-cargo build
-```
