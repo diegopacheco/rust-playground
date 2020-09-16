@@ -6,7 +6,8 @@ edition = "2018"
 
 [dependencies]
 pb-jelly = "0.0.1"
-protobuf = { version = "2", features = ["with-bytes"] }
 
 [build-dependencies]
 pb-jelly-gen = "0.0.1"
+protobuf = { version = "2", features = ["with-bytes"] }
+protoc-rust = "1.5"
