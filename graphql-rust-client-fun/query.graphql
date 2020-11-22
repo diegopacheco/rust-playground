@@ -1,4 +1,4 @@
-query BookQuery($bookID: String) {
+query BookQuery($bookID: ID) {
      bookById(id:$bookID){
     	name,
     	pageCount,
