@@ -1,0 +1,11 @@
+query BookQuery($bookID: String) {
+     bookById(id:$bookID){
+    	name,
+    	pageCount,
+        author {
+          id,
+          firstName,
+          lastName
+        }
+    }
+}

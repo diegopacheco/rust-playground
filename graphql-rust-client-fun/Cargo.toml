@@ -1,0 +1,12 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+GraphQL = "0.1.0"
+graphql_client = "0.9.0"
+serde = "^1.0"
+reqwest = { version = "^0.10", features = ["json", "blocking"] }
+tokio = { version = "0.3.4", features = ["full"] }
