@@ -12,9 +12,17 @@ pub struct BookQuery;
 
 async fn perform_my_query(variables: book_query::Variables) -> Result<(), Box<dyn Error>> {
     let request_body = BookQuery::build_query(variables);
-    let client = reqwest::Client::new();
-    let res = client.post("http://127.0.0.1:8080/graphql").json(&request_body).send().await?;
-    let response_body: Response<book_query::ResponseData> = res.json().await?;
+
+    let client = reqwest::blocking::Client::builder()
+        .user_agent("graphql-rust/0.9.0")
+        .build()?;
+
+    let res = client
+        .post("http://localhost:8080/graphql")
+        .json(&request_body)
+        .send()?;
+
+    let response_body: Response<book_query::ResponseData> = res.json()?;
     println!("{:#?}", response_body);
     Ok(())
 }
