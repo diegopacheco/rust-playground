@@ -1,0 +1,13 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+tree-sitter = "0.17.1"
+cc = "1.0.66"
+
+[build-dependencies]
+cc="*"
+tree-sitter = "*"
