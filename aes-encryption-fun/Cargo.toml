@@ -1,0 +1,11 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+aes = "0.6.0"
+block-modes = "0.7.0"
+hex-literal = "0.3.1"
+base64 = "0.13.0"
