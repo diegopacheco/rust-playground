@@ -1,0 +1,10 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+datafusion = "4.0.0"
+arrow = "4.0.0"
+tokio = { version = "1", features = ["full"] }
