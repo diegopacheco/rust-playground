@@ -1,0 +1,4 @@
+### Build
+```bash
+cargo build
+```
