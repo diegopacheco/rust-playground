@@ -5,6 +5,11 @@ fn plus(args:Vec<String>) -> String {
     iargs.iter().fold(0,|acc,&x|acc+x).to_string()
 }
 
+fn minus(args:Vec<String>) -> String {
+    let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
+    iargs.iter().fold(0,|acc,&x|acc-x).to_string()
+}
+
 fn tokenize(lisp_code:&String) -> Vec<&str> {
     lisp_code.split_whitespace().collect()
 }
@@ -14,8 +19,9 @@ fn main() {
     let tokens = tokenize(&lisp_code);
     println!("tokens {:?}",tokens);
 
-    let mut ops = HashMap::new();
+    let mut ops:HashMap<String,fn(Vec<String>) -> String> = HashMap::new();
     ops.insert(String::from("+"),plus);
+    ops.insert(String::from("-"),minus);
 
     let mut stack:Vec<String> = Vec::new();
     for token_ref in tokens{
