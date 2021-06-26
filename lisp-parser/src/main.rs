@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::io::Write;
 
 fn main() {
     let lisp_code = "(+ 1 2 (+ 3 4))";
@@ -25,17 +25,28 @@ fn main() {
 
             let op = sub_stack.pop().unwrap();
             let mut ivals:Vec<i32> = Vec::new();
-            for val in sub_stack{
-                let i_val = match i32::from_str(val){
-                   Err(e) => {
-                       writeln!(std::io::stderr(),"could not parse number");
-                       std::process::exit(1);
-                    },
-                    Ok(v) => v
-                };
+            for val in &sub_stack{
+                let i_val= val.parse().unwrap();
                 ivals.push(i_val);
             }
+
+            match op{
+                "+" => {
+                    stack.push(
+                        ivals.
+                            iter().
+                            fold(0,|acc,&x|acc+x)
+                    );
+                },
+                _ => {
+                    eprintln!("unknown op {:?}", op);
+                    std::process::exit(1);
+                }
+            }
+
             println!("{:?}",sub_stack);
+        } else{
+            stack.push(token);
         }
     }
 }
