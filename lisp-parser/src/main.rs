@@ -1,6 +1,10 @@
+fn tokenize(lisp_code:&String) -> Vec<&str> {
+    lisp_code.split_whitespace().collect()
+}
+
 fn main() {
-    let lisp_code = "(+ 1 2 (+ 3 4))";
-    let tokens:Vec<&str> = lisp_code.split_whitespace().collect();
+    let lisp_code = "(+ 1 2 (+ 3 4))".to_string();
+    let tokens = tokenize(&lisp_code);
     println!("{:?}",tokens);
 
     let mut stack:Vec<String> = Vec::new();
