@@ -15,7 +15,7 @@ fn minus(args:Vec<String>) -> String {
 
 fn multiply(args:Vec<String>) -> String {
     let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
-    iargs.iter().fold(0,|acc,&x|acc*x).to_string()
+    iargs.iter().fold(1,|acc,&x|acc*x).to_string()
 }
 
 fn tokenize(lisp_code:&String) -> Vec<&str> {
@@ -82,3 +82,9 @@ fn plus_test(){
 fn minus_test(){
     assert_eq!(minus(vec!["4".to_string(),"10".to_string()]),"6");
 }
+
+#[test]
+fn multiply_test(){
+    assert_eq!(multiply(vec!["6".to_string(),"10".to_string()]),"60");
+}
+
