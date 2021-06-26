@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+type OpFn = fn(Vec<String>) -> String;
+
 fn plus(args:Vec<String>) -> String {
     let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
     iargs.iter().fold(0,|acc,&x|acc+x).to_string()
@@ -14,7 +16,7 @@ fn tokenize(lisp_code:&String) -> Vec<&str> {
     lisp_code.split_whitespace().collect()
 }
 
-fn evaluate(code:String,ops:HashMap<String,fn(Vec<String>) -> String>) -> String {
+fn evaluate(code:String,ops:HashMap<String,OpFn>) -> String {
     let tokens = tokenize(&code);
     println!("tokens {:?}",tokens);
 
@@ -56,7 +58,7 @@ fn evaluate(code:String,ops:HashMap<String,fn(Vec<String>) -> String>) -> String
 fn main() {
     let lisp_code = "( + 1 2 ( + 3 4 ) )".to_string();
 
-    let mut ops:HashMap<String,fn(Vec<String>) -> String> = HashMap::new();
+    let mut ops:HashMap<String,OpFn> = HashMap::new();
     ops.insert(String::from("+"),plus);
     ops.insert(String::from("-"),minus);
 
