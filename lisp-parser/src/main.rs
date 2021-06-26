@@ -1,3 +1,14 @@
+use std::collections::HashMap;
+
+fn plus(args:Vec<String>) -> String {
+    let mut ivals:Vec<i32> = Vec::new();
+    for val in args{
+        let i_val= val.parse().unwrap();
+        ivals.push(i_val);
+    }
+    ivals.iter().fold(0,|acc,&x|acc+x).to_string()
+}
+
 fn tokenize(lisp_code:&String) -> Vec<&str> {
     lisp_code.split_whitespace().collect()
 }
@@ -5,15 +16,20 @@ fn tokenize(lisp_code:&String) -> Vec<&str> {
 fn main() {
     let lisp_code = "(+ 1 2 (+ 3 4))".to_string();
     let tokens = tokenize(&lisp_code);
-    println!("{:?}",tokens);
+    println!("tokens {:?}",tokens);
+
+    let mut ops = HashMap::new();
+    ops.insert(String::from("+"),plus);
 
     let mut stack:Vec<String> = Vec::new();
     for token_ref in tokens{
         let token = token_ref.to_string();
-        if token==")"{
+        if token == "("{
+          // do nothing by design
+        }else if token==")"{
             let mut sub_stack:Vec<String> = Vec::new();
             loop{
-                let t = match stack.pop(){
+                let t:String = match stack.pop(){
                     None => break,
                     Some(t) => t
                 };
@@ -21,7 +37,7 @@ fn main() {
                     continue;
                 }
                 sub_stack.push(t.clone());
-                if t=="+"{
+                if ops.contains_key(&t){
                     break;
                 }
             }
@@ -33,20 +49,8 @@ fn main() {
                 ivals.push(i_val);
             }
 
-            match op.as_ref(){
-                "+" => {
-                    let total = ivals.
-                        iter().
-                        fold(0,|acc,&x|acc+x);
-                    stack.push(total.to_string());
-                },
-                _ => {
-                    eprintln!("unknown op {:?}", op);
-                    std::process::exit(1);
-                }
-            }
+            ops.get(&op).unwrap()(sub_stack);
 
-            println!("{:?}",sub_stack);
         } else{
             stack.push(token);
         }
