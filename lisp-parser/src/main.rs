@@ -29,9 +29,6 @@ fn main() {
                     None => break,
                     Some(t) => t
                 };
-                if t=="("{
-                    continue;
-                }
                 sub_stack.push(t.clone());
                 if ops.contains_key(&t){
                     break;
@@ -46,7 +43,6 @@ fn main() {
 
             let result = ops.get(&op).unwrap()(sub_stack);
             stack.push(result);
-
         } else{
             stack.push(token);
         }
