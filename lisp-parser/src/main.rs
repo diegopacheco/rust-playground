@@ -14,20 +14,15 @@ fn tokenize(lisp_code:&String) -> Vec<&str> {
     lisp_code.split_whitespace().collect()
 }
 
-fn main() {
-    let lisp_code = "( + 1 2 ( + 3 4 ) )".to_string();
-    let tokens = tokenize(&lisp_code);
+fn evaluate(code:String,ops:HashMap<String,fn(Vec<String>) -> String>) -> String {
+    let tokens = tokenize(&code);
     println!("tokens {:?}",tokens);
-
-    let mut ops:HashMap<String,fn(Vec<String>) -> String> = HashMap::new();
-    ops.insert(String::from("+"),plus);
-    ops.insert(String::from("-"),minus);
 
     let mut stack:Vec<String> = Vec::new();
     for token_ref in tokens{
         let token = token_ref.to_string();
         if token == "("{
-          // do nothing by design
+            // do nothing by design
         }else if token==")"{
             let mut sub_stack:Vec<String> = Vec::new();
             loop{
@@ -54,5 +49,17 @@ fn main() {
             stack.push(token);
         }
     }
-    println!("{} == {:?}", lisp_code, stack.pop().unwrap());
+    assert!(stack.len()==1);
+    stack.pop().unwrap()
+}
+
+fn main() {
+    let lisp_code = "( + 1 2 ( + 3 4 ) )".to_string();
+
+    let mut ops:HashMap<String,fn(Vec<String>) -> String> = HashMap::new();
+    ops.insert(String::from("+"),plus);
+    ops.insert(String::from("-"),minus);
+
+    let result = evaluate(lisp_code.to_string(),ops);
+    println!("{} == {:?}", &lisp_code, result);
 }
