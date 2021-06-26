@@ -12,6 +12,11 @@ fn minus(args:Vec<String>) -> String {
     iargs.iter().fold(0,|acc,&x|acc-x).to_string()
 }
 
+fn multiply(args:Vec<String>) -> String {
+    let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
+    iargs.iter().fold(0,|acc,&x|acc*x).to_string()
+}
+
 fn tokenize(lisp_code:&String) -> Vec<&str> {
     lisp_code.split_whitespace().collect()
 }
@@ -61,6 +66,7 @@ fn main() {
     let mut ops:HashMap<String,OpFn> = HashMap::new();
     ops.insert(String::from("+"),plus);
     ops.insert(String::from("-"),minus);
+    ops.insert(String::from("*"),multiply);
 
     let result = evaluate(lisp_code.to_string(),ops);
     println!("{} == {:?}", &lisp_code, result);
