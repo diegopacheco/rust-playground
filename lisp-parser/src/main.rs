@@ -61,16 +61,23 @@ fn evaluate(code:String,ops:HashMap<String,OpFn>) -> String {
     stack.pop().unwrap()
 }
 
-fn main() {
-    let lisp_code = "( + 1 2 ( + 3 4 ) )".to_string();
-
+fn ops() -> HashMap<String,OpFn>{
     let mut ops:HashMap<String,OpFn> = HashMap::new();
     ops.insert(String::from("+"),plus);
     ops.insert(String::from("-"),minus);
     ops.insert(String::from("*"),multiply);
+    ops
+}
 
-    let result = evaluate(lisp_code.to_string(),ops);
+fn main() {
+    let lisp_code = "( + 1 2 ( + 3 4 ) )".to_string();
+    let result = evaluate(lisp_code.to_string(),ops());
     println!("{} == {:?}", &lisp_code, result);
+}
+
+#[test]
+fn evaluate_test(){
+    assert_eq!(evaluate("( + 1 2 ( + 3 4 ) )".to_string(),ops()),"10");
 }
 
 #[test]
