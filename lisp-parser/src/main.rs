@@ -15,7 +15,7 @@ fn tokenize(lisp_code:&String) -> Vec<&str> {
 }
 
 fn main() {
-    let lisp_code = "(+ 1 2 (+ 3 4))".to_string();
+    let lisp_code = "( + 1 2 ( + 3 4 ) )".to_string();
     let tokens = tokenize(&lisp_code);
     println!("tokens {:?}",tokens);
 
@@ -31,7 +31,7 @@ fn main() {
         }else if token==")"{
             let mut sub_stack:Vec<String> = Vec::new();
             loop{
-                let t:String = match stack.pop(){
+                let t = match stack.pop(){
                     None => break,
                     Some(t) => t
                 };
@@ -48,10 +48,11 @@ fn main() {
             }
 
             let result = ops.get(&op).unwrap()(sub_stack);
+            println!("sub_eval result is == {:?}",result);
             stack.push(result);
         } else{
             stack.push(token);
         }
     }
-    println!("{:?}",stack);
+    println!("{} == {:?}", lisp_code, stack.pop().unwrap());
 }
