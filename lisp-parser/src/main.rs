@@ -8,8 +8,9 @@ fn plus(args:Vec<String>) -> String {
 }
 
 fn minus(args:Vec<String>) -> String {
-    let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
-    iargs.iter().fold(0,|acc,&x|acc-x).to_string()
+    let mut iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
+    let first = iargs.pop().unwrap();
+    iargs.iter().fold(first,|acc,&x|acc-x).to_string()
 }
 
 fn multiply(args:Vec<String>) -> String {
@@ -70,4 +71,14 @@ fn main() {
 
     let result = evaluate(lisp_code.to_string(),ops);
     println!("{} == {:?}", &lisp_code, result);
+}
+
+#[test]
+fn plus_test(){
+    assert_eq!(plus(vec!["1".to_string(),"2".to_string(),"3".to_string()]),"6");
+}
+
+#[test]
+fn minus_test(){
+    assert_eq!(minus(vec!["4".to_string(),"10".to_string()]),"6");
 }
