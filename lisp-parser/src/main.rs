@@ -1,14 +1,13 @@
-use std::io::Write;
-
 fn main() {
     let lisp_code = "(+ 1 2 (+ 3 4))";
     let tokens:Vec<&str> = lisp_code.split_whitespace().collect();
     println!("{:?}",tokens);
 
-    let mut stack:Vec<&str> = Vec::new();
-    for token in tokens{
+    let mut stack:Vec<String> = Vec::new();
+    for token_ref in tokens{
+        let token = token_ref.to_string();
         if token==")"{
-            let mut sub_stack:Vec<&str> = Vec::new();
+            let mut sub_stack:Vec<String> = Vec::new();
             loop{
                 let t = match stack.pop(){
                     None => break,
@@ -17,7 +16,7 @@ fn main() {
                 if t=="("{
                     continue;
                 }
-                sub_stack.push(t);
+                sub_stack.push(t.clone());
                 if t=="+"{
                     break;
                 }
@@ -30,13 +29,12 @@ fn main() {
                 ivals.push(i_val);
             }
 
-            match op{
+            match op.as_ref(){
                 "+" => {
-                    stack.push(
-                        ivals.
-                            iter().
-                            fold(0,|acc,&x|acc+x)
-                    );
+                    let total = ivals.
+                        iter().
+                        fold(0,|acc,&x|acc+x);
+                    stack.push(total.to_string());
                 },
                 _ => {
                     eprintln!("unknown op {:?}", op);
