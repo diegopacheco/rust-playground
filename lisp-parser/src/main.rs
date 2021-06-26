@@ -1,12 +1,8 @@
 use std::collections::HashMap;
 
 fn plus(args:Vec<String>) -> String {
-    let mut ivals:Vec<i32> = Vec::new();
-    for val in args{
-        let i_val= val.parse().unwrap();
-        ivals.push(i_val);
-    }
-    ivals.iter().fold(0,|acc,&x|acc+x).to_string()
+    let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
+    iargs.iter().fold(0,|acc,&x|acc+x).to_string()
 }
 
 fn tokenize(lisp_code:&String) -> Vec<&str> {
@@ -41,7 +37,6 @@ fn main() {
                     break;
                 }
             }
-
             let op = sub_stack.pop().unwrap();
             let mut ivals:Vec<i32> = Vec::new();
             for val in &sub_stack{
@@ -49,10 +44,12 @@ fn main() {
                 ivals.push(i_val);
             }
 
-            ops.get(&op).unwrap()(sub_stack);
+            let result = ops.get(&op).unwrap()(sub_stack);
+            stack.push(result);
 
         } else{
             stack.push(token);
         }
     }
+    println!("{:?}",stack);
 }
