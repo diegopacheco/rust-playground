@@ -11,5 +11,9 @@ fn to_vecdeque(vector:Vec<i32>) -> VecDeque<i32> {
 }
 
 fn to_vec(v:Vec<String>) -> Vec<&'static str>{
-    v.iter().map(|s| &**s).collect()
+    let mut items = Vec::<&str>::with_capacity(v.len());
+    for item in v {
+        items.push(item.clone().as_str());
+    }
+    items
 }
