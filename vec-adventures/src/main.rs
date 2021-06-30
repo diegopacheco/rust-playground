@@ -58,7 +58,7 @@ fn vec_contains_string(search:String,vector:Vec<String>) -> bool {
     for s in vector{
         match s == search {
             true => return true,
-            _ => ()
+            _ => {}
         }
     }
     false
