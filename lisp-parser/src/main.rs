@@ -1,27 +1,27 @@
-use queues::*;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 
-type OpFn = fn(Queue<String>) -> String;
+type OpFn = fn(VecDeque<String>) -> String;
 
-fn inc(mut args:Queue<String>) -> String {
+fn inc(args:VecDeque<String>) -> String {
     println!("args {:?}",args);
     let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
-    "(".to_string() + &iargs.iter().map(|x| (x+1).to_string() ).collect::<Vec<String>>().join(",") + ")"
+    "(".to_string() + &iargs.iter().map(|x| (x+1).to_string() ).
+        collect::<Vec<String>>().join(",") + ")"
 }
 
-fn plus(args:Queue<String>) -> String {
+fn plus(args:VecDeque<String>) -> String {
     println!("args {:?}",args);
     let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
     iargs.iter().fold(0,|acc,&x|acc+x).to_string()
 }
 
-fn minus(args:Queue<String>) -> String {
+fn minus(args:VecDeque<String>) -> String {
     let mut iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
     let first = iargs.pop().unwrap();
     iargs.iter().fold(first,|acc,&x|acc-x).to_string()
 }
 
-fn multiply(args:Queue<String>) -> String {
+fn multiply(args:VecDeque<String>) -> String {
     let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
     iargs.iter().fold(1,|acc,&x|acc*x).to_string()
 }
@@ -41,19 +41,19 @@ fn evaluate(code:String,ops:HashMap<String,OpFn>) -> String {
         if token == "("{
             // do nothing by design
         }else if token==")"{
-            let mut sub_stack:Queue<String> = Queue::new();
+            let mut queue:VecDeque<String> = VecDeque::new();
             loop{
                 let t = match stack.pop(){
                     None => break,
                     Some(t) => t
                 };
-                sub_stack.add(t.clone());
+                queue.push_front(t.clone());
                 if ops.contains_key(&t){
                     break;
                 }
             }
-            let op = sub_stack.peek().unwrap();
-            let result = ops.get(&op).unwrap()(sub_stack);
+            let op = queue.pop_front().unwrap();
+            let result = ops.get(&op).unwrap()(queue);
             println!("sub_eval result is == {:?}",result);
             stack.push(result);
         } else{
@@ -87,22 +87,22 @@ fn evaluate_test(){
 
 #[test]
 fn plus_test(){
-    assert_eq!(plus(queue!["1".to_string(),"2".to_string(),"3".to_string()]),"6");
+    assert_eq!(plus(VecDeque::from(vec!["1".to_string(),"2".to_string(),"3".to_string()])),"6");
 }
 
 #[test]
 fn minus_test(){
-    assert_eq!(minus(queue!["4".to_string(),"10".to_string()]),"6");
+    assert_eq!(minus(VecDeque::from(vec!["4".to_string(),"10".to_string()])),"6");
 }
 
 #[test]
 fn multiply_test(){
-    assert_eq!(multiply(queue!["6".to_string(),"10".to_string()]),"60");
+    assert_eq!(multiply(VecDeque::from(vec!["6".to_string(),"10".to_string()])),"60");
 }
 
 #[test]
 fn inc_test(){
-    assert_eq!(inc(queue!["1".to_string(),"2".to_string(),"3".to_string()]),"(2,3,4)");
-    assert_eq!(inc(queue!["1".to_string()]),"(2)");
-    assert_eq!(evaluate("( inc 2 3 )".to_string(),ops()),"(3,4))");
+    assert_eq!(inc(VecDeque::from(vec!["1".to_string(),"2".to_string(),"3".to_string()])),"(2,3,4)");
+    assert_eq!(inc(VecDeque::from(vec!["1".to_string()])),"(2)");
+    assert_eq!(evaluate("( inc 2 3 )".to_string(),ops()),"(3,4)");
 }
