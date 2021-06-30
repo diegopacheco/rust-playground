@@ -25,6 +25,11 @@ fn main() {
    let r6_arg:&mut Vec<i32> = r6.as_mut();
    let (even, odd) = vec_partition(r6_arg);
    println!("partition on vec<i32> == evens {:?} odds {:?}",even,odd);
+
+   let r7_arg1 = vec![1,2,3];
+   let r7_arg2 = vec![4,5,6];
+   let merged = vec_concant_new(r7_arg1,r7_arg2);
+   println!("concat vec<i32> == {:?}",merged);
 }
 
 fn to_vecdeque(vector:Vec<i32>) -> VecDeque<i32> {
@@ -72,4 +77,11 @@ fn vec_contains_string(search:String,vector:Vec<String>) -> bool {
 fn vec_partition(a: &mut Vec<i32>) -> (Vec<i32>, Vec<i32>) {
     let (even, odd): (Vec<i32>, Vec<i32>) = (&*a).into_iter().partition(|&n| n % 2 == 0);
     (even, odd)
+}
+
+fn vec_concant_new(mut a:Vec<i32>,mut b:Vec<i32>) -> Vec<i32> {
+    let mut result:Vec<i32> = Vec::new();
+    result.append(&mut a);
+    result.append(&mut b);
+    result
 }
