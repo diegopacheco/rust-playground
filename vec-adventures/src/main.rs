@@ -16,6 +16,10 @@ fn main() {
 
    let r4 = vec!["a".to_string(),"e".to_string(),"x".to_string()];
    println!("vec<String> fp == {:?}", func_prog(r4));
+
+   let r5 = vec!["Diego".to_string(),"Clara".to_string(),"Melina".to_string()];
+   println!("has Clara == {}",vec_contains_string("Clara".to_string(),r5.clone()));
+   println!("has Dino  == {}",vec_contains_string("Dino".to_string(),r5).clone());
 }
 
 fn to_vecdeque(vector:Vec<i32>) -> VecDeque<i32> {
@@ -48,4 +52,14 @@ fn func_prog(letters:Vec<String>) -> String {
         ).map(|v| v.to_uppercase())
         .collect::<Vec<String>>();
     result.join(",")
+}
+
+fn vec_contains_string(search:String,vector:Vec<String>) -> bool {
+    for s in vector{
+        match s == search {
+            true => return true,
+            _ => ()
+        }
+    }
+    false
 }
