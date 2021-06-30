@@ -13,6 +13,9 @@ fn main() {
 
    let r3:Vec<String> = to_string_vec(vec![&"c", &"d"]);
    println!("vec<&str> to Vec<String> {:?}", r3);
+
+   let r4 = vec!["a".to_string(),"e".to_string(),"x".to_string()];
+   println!("vec<String> fp == {:?}", func_prog(r4));
 }
 
 fn to_vecdeque(vector:Vec<i32>) -> VecDeque<i32> {
@@ -33,4 +36,16 @@ fn to_string_vec<'a>(v:Vec<&'a str>) -> Vec<String> {
         items.push(item.to_string());
     }
     items
+}
+
+fn func_prog(letters:Vec<String>) -> String {
+    let result: Vec<String> = letters.iter()
+        .filter(|l|    **l=="a".to_string()
+                            || **l=="e".to_string()
+                            || **l=="i".to_string()
+                            || **l=="o" .to_string()
+                            || **l=="u".to_string()
+        ).map(|v| v.to_uppercase())
+        .collect::<Vec<String>>();
+    result.join(",")
 }
