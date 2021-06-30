@@ -1,20 +1,27 @@
+use queues::*;
 use std::collections::HashMap;
 
-type OpFn = fn(Vec<String>) -> String;
+type OpFn = fn(Queue<String>) -> String;
 
-fn plus(args:Vec<String>) -> String {
+fn inc(mut args:Queue<String>) -> String {
+    println!("args {:?}",args);
+    let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
+    "(".to_string() + &iargs.iter().map(|x| (x+1).to_string() ).collect::<Vec<String>>().join(",") + ")"
+}
+
+fn plus(args:Queue<String>) -> String {
     println!("args {:?}",args);
     let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
     iargs.iter().fold(0,|acc,&x|acc+x).to_string()
 }
 
-fn minus(args:Vec<String>) -> String {
+fn minus(args:Queue<String>) -> String {
     let mut iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
     let first = iargs.pop().unwrap();
     iargs.iter().fold(first,|acc,&x|acc-x).to_string()
 }
 
-fn multiply(args:Vec<String>) -> String {
+fn multiply(args:Queue<String>) -> String {
     let iargs:Vec<i32> = args.iter().map(|s| s.parse().unwrap()).collect();
     iargs.iter().fold(1,|acc,&x|acc*x).to_string()
 }
@@ -34,30 +41,18 @@ fn evaluate(code:String,ops:HashMap<String,OpFn>) -> String {
         if token == "("{
             // do nothing by design
         }else if token==")"{
-            let mut sub_stack:Vec<String> = Vec::new();
+            let mut sub_stack:Queue<String> = Queue::new();
             loop{
                 let t = match stack.pop(){
                     None => break,
                     Some(t) => t
                 };
-                sub_stack.push(t.clone());
+                sub_stack.add(t.clone());
                 if ops.contains_key(&t){
                     break;
                 }
             }
-            let mut op = sub_stack.pop().unwrap();
-            op = op.replace(")", "");
-            op = op.replace("(", "");
-
-            let mut ivals:Vec<i32> = Vec::new();
-            for val in &sub_stack{
-                let mut val_clean = val.replace(")", "");
-                val_clean = val_clean.replace("(", "");
-                println!("val_clean {:?}",val_clean);
-                let i_val= val_clean.parse().unwrap_or(0);
-                ivals.push(i_val);
-            }
-
+            let op = sub_stack.peek().unwrap();
             let result = ops.get(&op).unwrap()(sub_stack);
             println!("sub_eval result is == {:?}",result);
             stack.push(result);
@@ -75,6 +70,7 @@ fn ops() -> HashMap<String,OpFn>{
     ops.insert(String::from("+"),plus);
     ops.insert(String::from("-"),minus);
     ops.insert(String::from("*"),multiply);
+    ops.insert(String::from("inc"),inc);
     ops
 }
 
@@ -91,15 +87,22 @@ fn evaluate_test(){
 
 #[test]
 fn plus_test(){
-    assert_eq!(plus(vec!["1".to_string(),"2".to_string(),"3".to_string()]),"6");
+    assert_eq!(plus(queue!["1".to_string(),"2".to_string(),"3".to_string()]),"6");
 }
 
 #[test]
 fn minus_test(){
-    assert_eq!(minus(vec!["4".to_string(),"10".to_string()]),"6");
+    assert_eq!(minus(queue!["4".to_string(),"10".to_string()]),"6");
 }
 
 #[test]
 fn multiply_test(){
-    assert_eq!(multiply(vec!["6".to_string(),"10".to_string()]),"60");
+    assert_eq!(multiply(queue!["6".to_string(),"10".to_string()]),"60");
+}
+
+#[test]
+fn inc_test(){
+    assert_eq!(inc(queue!["1".to_string(),"2".to_string(),"3".to_string()]),"(2,3,4)");
+    assert_eq!(inc(queue!["1".to_string()]),"(2)");
+    assert_eq!(evaluate("( inc 2 3 )".to_string(),ops()),"(3,4))");
 }
