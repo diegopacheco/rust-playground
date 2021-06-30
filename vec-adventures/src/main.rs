@@ -2,14 +2,14 @@ use std::collections::VecDeque;
 
 fn main() {
 
-    let r1:VecDeque<i32> = to_vecdeque(vec![1,2,3]);
-    println!("vec to VecDeque {:?}",r1);
+   let r1:VecDeque<i32> = to_vecdeque(vec![1,2,3]);
+   println!("vec to VecDeque {:?}",r1);
 
-    let a = "a".to_string();
-    let b = "b".to_string();
-    let r2_args = &vec![&a, &b];
-    let r2:Vec<&str> = to_str_vec(r2_args);
-    println!("vec<String> to Vec<&str> {:?}", r2);
+   let a = "a".to_string();
+   let b = "b".to_string();
+   let r2_args = &vec![&a, &b];
+   let r2:Vec<&str> = to_str_vec(r2_args);
+   println!("vec<String> to Vec<&str> {:?}", r2);
 
    let r3:Vec<String> = to_string_vec(vec![&"c", &"d"]);
    println!("vec<&str> to Vec<String> {:?}", r3);
