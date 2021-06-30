@@ -20,6 +20,11 @@ fn main() {
    let r5 = vec!["Diego".to_string(),"Clara".to_string(),"Melina".to_string()];
    println!("has Clara == {}",vec_contains_string("Clara".to_string(),r5.clone()));
    println!("has Dino  == {}",vec_contains_string("Dino".to_string(),r5).clone());
+
+   let mut r6 = vec![1,2,3,4,5,6,7,8,9];
+   let r6_arg:&mut Vec<i32> = r6.as_mut();
+   let (even, odd) = vec_partition(r6_arg);
+   println!("partition on vec<i32> == evens {:?} odds {:?}",even,odd);
 }
 
 fn to_vecdeque(vector:Vec<i32>) -> VecDeque<i32> {
@@ -62,4 +67,9 @@ fn vec_contains_string(search:String,vector:Vec<String>) -> bool {
         }
     }
     false
+}
+
+fn vec_partition(a: &mut Vec<i32>) -> (Vec<i32>, Vec<i32>) {
+    let (even, odd): (Vec<i32>, Vec<i32>) = (&*a).into_iter().partition(|&n| n % 2 == 0);
+    (even, odd)
 }
