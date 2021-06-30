@@ -1,16 +1,18 @@
 use std::collections::VecDeque;
-use std::borrow::Borrow;
-use std::iter::FromIterator;
 
 fn main() {
     println!("vec to VecDeque {:?}",to_vecdeque(vec![1,2,3]));
-    println!("vec<&str> to Vec<String> {:?}",to_vec(vec!["a".to_string(),"b".to_string()]));
+    println!("vec<&str> to Vec<String> {:?}",to_vec(&vec![&"a".to_string(),&"b".to_string()]));
 }
 
 fn to_vecdeque(vector:Vec<i32>) -> VecDeque<i32> {
     VecDeque::from(vector)
 }
 
-fn to_vec(v:Vec<String>) -> Vec<&'static str> {
-    Vec::from_iter( v.iter().map(String::as_str))
+fn to_vec<'a>(v:&Vec<&'a String>) -> Vec<&'a str> {
+    let mut items = Vec::<&str>::new();
+    for item in v {
+        items.push(item);
+    }
+    items
 }
