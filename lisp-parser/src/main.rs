@@ -29,12 +29,7 @@ fn evaluate(code:String,ops:HashMap<String,OpFn>) -> String {
 
     let mut stack:Vec<String> = Vec::new();
     for token_ref in tokens{
-        let mut token = token_ref.to_string();
-        if token.len() >=2{
-            token = token.replace(")", "");
-            token = token.replace("(", "");
-        }
-        println!("current token {:?}",token);
+        let token = token_ref.to_string();
 
         if token == "("{
             // do nothing by design
@@ -107,9 +102,4 @@ fn minus_test(){
 #[test]
 fn multiply_test(){
     assert_eq!(multiply(vec!["6".to_string(),"10".to_string()]),"60");
-}
-
-#[test]
-fn no_spaces_plus_test(){
-    assert_eq!(evaluate("(+ 1 2 3)".to_string(),ops()),"6");
 }
