@@ -47,6 +47,16 @@ impl Person{
         self.prefered_os=os;
         self
     }
+    fn build(mut self) -> std::result::Result<Self,String> {
+        let os = self.prefered_os;
+        if matches!(os,OS::MacOs){
+            let mut msg = "No noney for this kind of os like: ".to_string();
+                msg.push_str(OS::MacOs.to_string().as_str());
+            Err(msg)
+        }else{
+            Ok(self)
+        }
+    }
 }
 
 impl Default for Person{
@@ -80,11 +90,16 @@ impl Display for Person {
 }
 
 fn main() {
-    let john = Person::default();
+    let john = Person::default().build().unwrap();
     println!("John == {}",&john);
 
     let mary = Person::default().with_name("Mary")
                                        .with_os(OS::Windows)
-                                       .with_age(50);
+                                       .with_age(50)
+                                       .build().unwrap();
     println!("Mary == {}",&mary);
+
+    if let Err(e) = Person::default().with_os(OS::MacOs).build(){
+        println!("Failed to create person - {}",e);
+    }
 }
