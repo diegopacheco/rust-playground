@@ -1,23 +1,27 @@
 use std::thread::JoinHandle;
 use std::sync::mpsc::{Sender, Receiver};
 use std::sync::{Arc, Mutex};
+use std::ops::Deref;
 
-struct ThreadPool<T>{
+struct ThreadPool{
     handlers:Vec<JoinHandle<()>>,
-    sender:Sender<fn()->T>,
-    receiver:Receiver<fn()->T>,
+    sender:Sender<Box<Task>>
 }
 
-impl <T>ThreadPool<T> {
+trait Task{}
+impl Task for i32{}
+impl Task for String{}
+
+impl ThreadPool {
     fn new(size:u16) -> Self{
-        let (sender,receiver) = std::sync::mpsc::channel::<fn()->T>();
-        let rec = Arc::new(Mutex::new(&receiver));
+        let (sender,receiver) = std::sync::mpsc::channel::<Box<Task>>();
+        let receiver = Arc::new(Mutex::new(receiver));
         let mut handlers:Vec<JoinHandle<()>> = vec![];
 
         for _ in 0..size{
-            let clone = rec.clone();
+            let clone = receiver.clone();
             let handle = std::thread::spawn(move || loop {
-                    let task = clone.lock().unwrap().try_recv().unwrap();
+                    let task = clone.lock().unwrap().recv().unwrap();
                     task();
             });
             handlers.push(handle);
@@ -25,21 +29,21 @@ impl <T>ThreadPool<T> {
 
         Self{
             handlers: handlers,
-            sender: sender,
-            receiver: receiver
+            sender: sender
         }
     }
-    fn submit(self,task:(fn()->T)){
+    fn submit(self,task:Box<Task>){
         let clone_sender = self.sender.clone();
         clone_sender.send(task);
     }
 }
 
 fn main() {
-    let tp:ThreadPool<i32> = ThreadPool::new(10);
-    let task:(fn()->i32) = || -> i32 {
-        println!("Running to deliver 42");
-        42
-    };
-    tp.submit(task);
+    let tp:ThreadPool = ThreadPool::new(10);
+    tp.submit(Box::new(get_task()));
+}
+
+fn get_task() -> impl Task {
+    println!("Running to deliver 42");
+    42
 }
