@@ -11,17 +11,18 @@ struct ThreadPool<T>{
 impl <T>ThreadPool<T> {
     fn new(size:u16) -> Self{
         let (sender,receiver) = std::sync::mpsc::channel::<fn()->T>();
-        let rec = Arc::new(Mutex::new(receiver));
-        let mut handlers:Vec<JoinHandle<()>> = (0..size)
-            .map(move |_| {
-                let clone = rec.clone();
-                std::thread::spawn(||{
-                    loop{
-                        let work:fn()->T = clone.lock().unwrap().try_recv().unwrap();
-                        work();
-                    }
-                })
-            }).collect();
+        let rec = Arc::new(Mutex::new(&receiver));
+        let mut handlers:Vec<JoinHandle<()>> = vec![];
+
+        for _ in 0..size{
+            let clone = rec.clone();
+            let handle = std::thread::spawn(move || loop {
+                    let task = clone.lock().unwrap().try_recv().unwrap();
+                    task();
+            });
+            handlers.push(handle);
+        }
+
         Self{
             handlers: handlers,
             sender: sender,
