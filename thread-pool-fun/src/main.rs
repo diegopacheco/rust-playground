@@ -2,19 +2,21 @@ use std::thread::JoinHandle;
 use std::sync::mpsc::{Sender, Receiver};
 use std::sync::{Arc, Mutex};
 use std::ops::Deref;
+use std::cell::{Cell, RefCell};
 
 struct ThreadPool{
     handlers:Vec<JoinHandle<()>>,
-    sender:Sender<Box<Task>>
+    sender:Sender<Arc<RefCell<Task>>>
 }
 
-trait Task{}
+trait Task{
+    fn run(&self){}
+}
 impl Task for i32{}
-impl Task for String{}
 
 impl ThreadPool {
     fn new(size:u16) -> Self{
-        let (sender,receiver) = std::sync::mpsc::channel::<Box<Task>>();
+        let (sender,receiver) = std::sync::mpsc::channel::<Arc<RefCell<Task>>>();
         let receiver = Arc::new(Mutex::new(receiver));
         let mut handlers:Vec<JoinHandle<()>> = vec![];
 
@@ -22,7 +24,7 @@ impl ThreadPool {
             let clone = receiver.clone();
             let handle = std::thread::spawn(move || loop {
                     let task = clone.lock().unwrap().recv().unwrap();
-                    task();
+                    task.try_borrow().unwrap().run();
             });
             handlers.push(handle);
         }
@@ -32,7 +34,7 @@ impl ThreadPool {
             sender: sender
         }
     }
-    fn submit(self,task:Box<Task>){
+    fn submit(self,task:Arc<RefCell<Task>>){
         let clone_sender = self.sender.clone();
         clone_sender.send(task);
     }
@@ -40,7 +42,7 @@ impl ThreadPool {
 
 fn main() {
     let tp:ThreadPool = ThreadPool::new(10);
-    tp.submit(Box::new(get_task()));
+    tp.submit(Arc::new(RefCell::new(get_task())));
 }
 
 fn get_task() -> impl Task {
