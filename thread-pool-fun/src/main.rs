@@ -1,51 +1,130 @@
-use std::thread::JoinHandle;
-use std::sync::mpsc::{Sender, Receiver};
-use std::sync::{Arc, Mutex};
-use std::ops::Deref;
-use std::cell::{Cell, RefCell};
+use std::sync::{mpsc, Arc, Mutex};
+use std::thread;
+use std::sync::atomic::{AtomicUsize, Ordering};
 
-struct ThreadPool{
-    handlers:Vec<JoinHandle<()>>,
-    sender:Sender<Arc<RefCell<Task>>>
+pub struct ThreadPool {
+    _workers: Vec<Worker>,
+    tx: mpsc::Sender<Job>,
 }
-
-trait Task{
-    fn run(&self){}
-}
-impl Task for i32{}
 
 impl ThreadPool {
-    fn new(size:u16) -> Self{
-        let (sender,receiver) = std::sync::mpsc::channel::<Arc<RefCell<Task>>>();
-        let receiver = Arc::new(Mutex::new(receiver));
-        let mut handlers:Vec<JoinHandle<()>> = vec![];
+    pub fn new(worker_count: usize) -> Self {
+        let (tx, rx) = mpsc::channel();
 
-        for _ in 0..size{
-            let clone = receiver.clone();
-            let handle = std::thread::spawn(move || loop {
-                    let task = clone.lock().unwrap().recv().unwrap();
-                    task.try_borrow().unwrap().run();
-            });
-            handlers.push(handle);
+        let rx = Arc::new(Mutex::new(rx));
+
+        let mut workers = Vec::with_capacity(worker_count);
+
+        for n in 0..worker_count {
+            workers.push(Worker::new(n, Arc::clone(&rx)))
         }
 
-        Self{
-            handlers: handlers,
-            sender: sender
+        ThreadPool {
+            _workers: workers,
+            tx,
         }
     }
-    fn submit(self,task:Arc<RefCell<Task>>){
-        let clone_sender = self.sender.clone();
-        clone_sender.send(task);
+
+    pub fn execute<F>(&self, callback: F)
+        where
+            F: FnOnce() + Send + 'static,
+    {
+        self.tx
+            .send(Box::new(callback))
+            .expect("Thread shut down too early");
     }
 }
 
-fn main() {
-    let tp:ThreadPool = ThreadPool::new(10);
-    tp.submit(Arc::new(RefCell::new(get_task())));
+struct Worker {
+    _id: usize,
+    _handle: thread::JoinHandle<()>,
 }
 
-fn get_task() -> impl Task {
-    println!("Running to deliver 42");
-    42
+impl Worker {
+    fn new(id: usize, rx: Arc<Mutex<mpsc::Receiver<Job>>>) -> Worker {
+        let handle = thread::spawn(move || loop {
+            let result = rx.lock().unwrap().recv();
+            match result {
+                Ok(rx) => {
+                    println!("Worker {} got a job; executing.", id);
+                    rx()
+                }
+                Err(_) => {
+                    println!("Worker {} signing off", id);
+                    break;
+                }
+            }
+        });
+        Worker {
+            _id: id,
+            _handle: handle,
+        }
+    }
+}
+
+type Job = Box<dyn FnOnce() + Send + 'static>;
+
+fn main(){
+    let pool = ThreadPool::new(4);
+    let count = Arc::new(AtomicUsize::new(0));
+
+    let count1 = count.clone();
+    pool.execute(move || {
+        println!("Thread 1");
+        count1.fetch_add(1, Ordering::SeqCst);
+        std::thread::sleep(std::time::Duration::from_secs(1));
+    });
+
+    let count2 = count.clone();
+    pool.execute(move || {
+        println!("Thread 2");
+        count2.fetch_add(1, Ordering::SeqCst);
+        std::thread::sleep(std::time::Duration::from_secs(1));
+    });
+
+    let count1 = count.clone();
+    std::thread::sleep(std::time::Duration::from_secs(2));
+    println!("Count {:?}",&count1);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+
+    #[test]
+    fn test_threadpool() {
+        let pool = ThreadPool::new(4);
+        let count = Arc::new(AtomicUsize::new(0));
+
+        let count1 = count.clone();
+        pool.execute(move || {
+            println!("Thread 1");
+            count1.fetch_add(1, Ordering::SeqCst);
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        });
+        let count2 = count.clone();
+        pool.execute(move || {
+            println!("Thread 2");
+            count2.fetch_add(1, Ordering::SeqCst);
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        });
+        let count3 = count.clone();
+        pool.execute(move || {
+            println!("Thread 3");
+            count3.fetch_add(1, Ordering::SeqCst);
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        });
+        let count4 = count.clone();
+        pool.execute(move || {
+            println!("Thread 4");
+            count4.fetch_add(1, Ordering::SeqCst);
+            std::thread::sleep(std::time::Duration::from_secs(1));
+        });
+        std::thread::sleep(std::time::Duration::from_secs(2));
+
+        let count = count.load(Ordering::SeqCst);
+
+        assert_eq!(count, 4);
+    }
 }
