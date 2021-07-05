@@ -1,5 +1,6 @@
 use std::time::{Duration};
 use std::time::{SystemTime};
+use std::thread::spawn;
 
 fn main() {
     run_my_dummy_threads();
@@ -10,7 +11,7 @@ fn main() {
 }
 
 fn run_my_dummy_threads(){
-    std::thread::spawn(||{
+    spawn(||{
         println!("Running from Thread 1");
     });
     std::thread::spawn(||{
