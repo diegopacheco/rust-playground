@@ -27,6 +27,7 @@ fn main() {
     let mut oniyflans = Profile::new(1,
                                  "Only Awesome Flans".to_string(),
                                  "https://twitter.com/oniyflans".to_string());
+
     oniyflans.mutate(|profile|{
         profile.name = "Only Flans".to_string();
     });
