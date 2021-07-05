@@ -40,7 +40,7 @@ impl Person{
         self
     }
     fn with_weight(mut self,weight:u32) -> Self {
-        self.height=weight;
+        self.weight=weight;
         self
     }
     fn with_os(mut self,os:OS) -> Self {
