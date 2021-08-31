@@ -1,0 +1,8 @@
+[package]
+name = "fern-user"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2018"
+
+[dependencies]
+fern-lib = { path = "../fern-lib/", version="1.0.0" } 
