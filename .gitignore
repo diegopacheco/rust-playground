@@ -15,3 +15,6 @@ zk-single-kafka-single/
 
 .idea/
 stale_outputs_checked
+
+*.so
+*.so.o
