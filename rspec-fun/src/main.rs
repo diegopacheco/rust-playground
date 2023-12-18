@@ -15,6 +15,7 @@ fn test_add() {
         ctx.when("0 <= x + y <= u32::MAX", |ctx| {
             ctx.then("2 + 4 = 6", |_| assert_eq!(6, add(2, 4)));
             ctx.then("4 + 4 = 8", |_| assert_eq!(8, add(4, 4)));
+            ctx.then("0 + 0 == 0",|_| assert_eq!(0, add(0,0)));
         });
         ctx.then("is associative", |_| {
             assert_eq!(add(2, 1), add(1, 2));
