@@ -1,0 +1,8 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1.36", features = ["full"] } 
