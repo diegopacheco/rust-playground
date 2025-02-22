@@ -10,15 +10,34 @@ echo "fn main() {
 }" > src/main.rs
 
 echo '### Build
+
 ```bash
 cargo build
-```' > README.md
+```
+
+### Run
+
+```bash
+cargo run
+```
+
+### Result
+
+```
+```
+
+' > README.md
 
 echo "[package]
 name = \"main\"
 version = \"1.0.0\"
 authors = [\"Diego.Pacheco\"]
-edition = \"2018\"
+edition = \"2024\"
 
 [dependencies]
-clap = \"2.33.0\" " > Cargo.toml
+tokio = { version = \"1.36\", features = [\"full\"] } " > Cargo.toml
+
+echo '#!/bin/bash
+
+cargo run' > run.sh
+chmod +x ./run.sh
