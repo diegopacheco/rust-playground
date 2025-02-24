@@ -1,0 +1,10 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2024"
+
+[dependencies]
+diesel = { version = "2.2.7", features = ["mysql","chrono"] }
+dotenvy = "0.15"
+chrono = { version = "0.4", features = ["serde"] }
