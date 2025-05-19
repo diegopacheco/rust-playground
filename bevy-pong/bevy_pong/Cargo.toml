@@ -1,0 +1,8 @@
+[package]
+name = "bevy_pong"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.13"
+rand = "0.8.5"
