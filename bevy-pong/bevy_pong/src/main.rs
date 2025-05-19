@@ -8,10 +8,10 @@ use rand::Rng;
 
 const WINDOW_WIDTH: f32 = 800.0;
 const WINDOW_HEIGHT: f32 = 600.0;
-const PADDLE_HEIGHT: f32 = 100.0;
-const PADDLE_WIDTH: f32 = 20.0;
+const PADDLE_HEIGHT: f32 = 120.0;
+const PADDLE_WIDTH: f32 = 25.0;
 const PADDLE_SPEED: f32 = 500.0;
-const BALL_SIZE: f32 = 30.0;
+const BALL_SIZE: f32 = 40.0;
 const BALL_SPEED: f32 = 400.0;
 const WALL_THICKNESS: f32 = 10.0;
 
@@ -50,11 +50,14 @@ fn main() {
                 title: "Bevy Pong".into(),
                 resolution: WindowResolution::new(WINDOW_WIDTH, WINDOW_HEIGHT),
                 present_mode: PresentMode::AutoVsync,
+                // Add this to ensure the window appears as expected
+                position: WindowPosition::Centered(MonitorSelection::Primary),
                 ..default()
             }),
             ..default()
         }))
         .add_systems(Startup, setup)
+        .add_systems(Startup, debug_startup) // Add this debug system to verify entities are spawned
         .add_systems(
             Update,
             (
@@ -68,22 +71,54 @@ fn main() {
         .run();
 }
 
+fn debug_startup(
+    ball_query: Query<&Transform, With<Ball>>,
+    paddle_query: Query<(&Transform, &Paddle)>,
+    text_query: Query<(&Transform, &ScoreText)>,
+) {
+    // Check ball position
+    for ball_transform in ball_query.iter() {
+        info!("Ball position: {:?}", ball_transform.translation);
+    }
+
+    // Check paddle positions
+    for (transform, paddle) in paddle_query.iter() {
+        info!(
+            "Paddle ({}) position: {:?}",
+            if paddle.is_left { "Left" } else { "Right" },
+            transform.translation
+        );
+    }
+
+    // Check score text positions
+    for (transform, score_text) in text_query.iter() {
+        info!(
+            "Score text ({}) position: {:?}",
+            if score_text.is_left { "Left" } else { "Right" },
+            transform.translation
+        );
+    }
+}
+
 fn setup(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    // Camera
-    commands.spawn(Camera2dBundle::default());
+    // Camera - adjust the projection to ensure everything is visible
+    commands.spawn(Camera2dBundle {
+        transform: Transform::from_translation(Vec3::new(0.0, 0.0, 1000.0)),
+        ..default()
+    });
 
-    // Paddles
-    // Left paddle
+    info!("Spawning left paddle");
+    // Left paddle - bright red for visibility
     commands.spawn((
         MaterialMesh2dBundle {
             mesh: meshes
                 .add(Rectangle::new(PADDLE_WIDTH, PADDLE_HEIGHT))
                 .into(),
-            material: materials.add(Color::WHITE),
+            material: materials.add(Color::rgb(1.0, 0.2, 0.2)), // Bright red
             transform: Transform::from_translation(Vec3::new(-WINDOW_WIDTH / 2.0 + 50.0, 0.0, 0.0)),
             ..default()
         },
@@ -94,13 +129,14 @@ fn setup(
         Collider,
     ));
 
-    // Right paddle
+    info!("Spawning right paddle");
+    // Right paddle - bright blue for visibility
     commands.spawn((
         MaterialMesh2dBundle {
             mesh: meshes
                 .add(Rectangle::new(PADDLE_WIDTH, PADDLE_HEIGHT))
                 .into(),
-            material: materials.add(Color::WHITE),
+            material: materials.add(Color::rgb(0.2, 0.2, 1.0)), // Bright blue
             transform: Transform::from_translation(Vec3::new(WINDOW_WIDTH / 2.0 - 50.0, 0.0, 0.0)),
             ..default()
         },
@@ -111,12 +147,13 @@ fn setup(
         Collider,
     ));
 
-    // Ball - Make it bright yellow for visibility
+    info!("Spawning ball");
+    // Ball - bright green for visibility
     commands.spawn((
         MaterialMesh2dBundle {
             mesh: meshes.add(Rectangle::new(BALL_SIZE, BALL_SIZE)).into(),
-            material: materials.add(Color::rgb(1.0, 1.0, 0.0)), // Bright yellow
-            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
+            material: materials.add(Color::rgb(0.0, 1.0, 0.0)), // Bright green
+            transform: Transform::from_translation(Vec3::new(0.0, 0.0, 10.0)), // Move slightly forward on z-axis
             ..default()
         },
         Ball {
@@ -135,84 +172,33 @@ fn setup(
         },
     ));
 
-    // Walls
-    // Top wall
-    commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
-                color: Color::rgb(0.8, 0.8, 0.8),
-                custom_size: Some(Vec2::new(WINDOW_WIDTH, WALL_THICKNESS)),
-                ..default()
-            },
-            transform: Transform::from_translation(Vec3::new(
-                0.0,
-                WINDOW_HEIGHT / 2.0 - WALL_THICKNESS / 2.0,
-                0.0,
-            )),
-            ..default()
-        },
-        Collider,
-    ));
-
-    // Bottom wall
-    commands.spawn((
-        SpriteBundle {
-            sprite: Sprite {
-                color: Color::rgb(0.8, 0.8, 0.8),
-                custom_size: Some(Vec2::new(WINDOW_WIDTH, WALL_THICKNESS)),
-                ..default()
-            },
-            transform: Transform::from_translation(Vec3::new(
-                0.0,
-                -WINDOW_HEIGHT / 2.0 + WALL_THICKNESS / 2.0,
-                0.0,
-            )),
-            ..default()
-        },
-        Collider,
-    ));
-
-    // Middle line
-    commands.spawn(SpriteBundle {
-        sprite: Sprite {
-            color: Color::rgb(0.8, 0.8, 0.8),
-            custom_size: Some(Vec2::new(2.0, WINDOW_HEIGHT)),
-            ..default()
-        },
-        transform: Transform::from_translation(Vec3::new(0.0, 0.0, 0.0)),
-        ..default()
-    });
-
-    // Score text - Use Text2dBundle instead of TextBundle for better positioning in 2D space
-    // Left score
     commands.spawn((
         Text2dBundle {
             text: Text::from_section(
                 "0",
                 TextStyle {
-                    font_size: 60.0,
-                    color: Color::WHITE,
+                    font_size: 120.0, // Much larger
+                    color: Color::rgb(1.0, 1.0, 0.0), // Bright yellow
                     ..default()
                 },
             ),
-            transform: Transform::from_translation(Vec3::new(-WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 3.0, 0.0)),
+            transform: Transform::from_translation(Vec3::new(-WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 3.0, 10.0)), // Move forward on z-axis
             ..default()
         },
         ScoreText { is_left: true },
     ));
 
-    // Right score
     commands.spawn((
         Text2dBundle {
             text: Text::from_section(
                 "0",
                 TextStyle {
-                    font_size: 60.0,
-                    color: Color::WHITE,
+                    font_size: 120.0, // Much larger
+                    color: Color::rgb(1.0, 1.0, 0.0), // Bright yellow
                     ..default()
                 },
             ),
-            transform: Transform::from_translation(Vec3::new(WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 3.0, 0.0)),
+            transform: Transform::from_translation(Vec3::new(WINDOW_WIDTH / 4.0, WINDOW_HEIGHT / 3.0, 10.0)), // Move forward on z-axis
             ..default()
         },
         ScoreText { is_left: false },
@@ -252,8 +238,10 @@ fn paddle_movement(
 
 fn ball_movement(time: Res<Time>, mut query: Query<(&mut Transform, &Ball)>) {
     for (mut transform, ball) in query.iter_mut() {
+        let old_pos = transform.translation;
         transform.translation.x += ball.velocity.x * time.delta_seconds();
         transform.translation.y += ball.velocity.y * time.delta_seconds();
+        info!("Ball moved from {:?} to {:?}", old_pos, transform.translation);
     }
 }
 
