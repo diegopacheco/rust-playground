@@ -1,0 +1,6 @@
+flask==3.0.3
+requests>=2.32.0
+numpy
+pandas~=2.2.1
+# comment
+uvicorn[standard]==0.30.1
