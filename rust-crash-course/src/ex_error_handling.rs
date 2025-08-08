@@ -9,6 +9,8 @@ fn read_to_string(p: &str) -> Result<String> {
 }
 
 pub fn run(){
+    print!(">>> Error Handling\n");
+
     match read_to_string("Cargo.toml"){
         Ok(s)=> println!("{}", s.lines().next().unwrap_or("")),
         Err(e)=> println!("{}", e),

@@ -1,4 +1,6 @@
 pub fn run() {
+    print!(">>> Control flow\n");
+
     let x = 7;
     if x % 2 == 0 {
         println!("even");
