@@ -1,9 +1,8 @@
 use gpui::*;
 use gpui_component::*;
 use serde::Deserialize;
-use std::collections::HashMap;
 
-const API_KEY: &str = "demo";
+const API_KEY: &str = "RIBXT3XYTV0GM0QL";
 
 #[derive(Debug, Deserialize)]
 struct AlphaVantageResponse {
@@ -54,14 +53,15 @@ fn fetch_stock_data(symbol: &str) -> Option<(f64, f64, f64)> {
 
 impl StockMonitor {
     fn new() -> Self {
-        let mut companies = HashMap::new();
-        companies.insert("AAPL", "Apple");
-        companies.insert("GOOGL", "Google");
-        companies.insert("MSFT", "Microsoft");
-        companies.insert("META", "Meta");
-        companies.insert("NVDA", "Nvidia");
-        companies.insert("TSLA", "Tesla");
-        companies.insert("CMG", "Chipotle");
+        let companies = vec![
+            ("AAPL", "Apple"),
+            ("GOOGL", "Google"),
+            ("MSFT", "Microsoft"),
+            ("META", "Meta"),
+            ("NVDA", "Nvidia"),
+            ("TSLA", "Tesla"),
+            ("CMG", "Chipotle"),
+        ];
 
         let mut stocks = Vec::new();
 
