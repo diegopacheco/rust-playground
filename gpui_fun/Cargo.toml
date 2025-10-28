@@ -1,0 +1,9 @@
+[package]
+name = "stock-monitor"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2024"
+
+[dependencies]
+gpui = "0.2.2"
+gpui-component = "0.3.0" 
