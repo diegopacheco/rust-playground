@@ -106,7 +106,7 @@ impl StockMonitor {
 }
 
 impl Render for StockMonitor {
-    fn render(&mut self, _cx: &mut ViewContext<Self>) -> impl IntoElement {
+    fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
         div()
             .size_full()
             .flex()
@@ -178,11 +178,17 @@ impl Render for StockMonitor {
 }
 
 fn main() {
-    App::new().run(|cx: &mut AppContext| {
+    let app = Application::new();
+    app.run(move |cx| {
         gpui_component::init(cx);
 
-        cx.open_window(WindowOptions::default(), |cx| {
-            cx.new_view(|_cx| StockMonitor::new())
-        }).unwrap();
+        cx.spawn(async move |cx| {
+            cx.open_window(WindowOptions::default(), |window, cx| {
+                let view = cx.new(|_| StockMonitor::new());
+                cx.new(|cx| Root::new(view.into(), window, cx))
+            })?;
+            Ok::<_, anyhow::Error>(())
+        })
+        .detach();
     });
 }
