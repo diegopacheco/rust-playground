@@ -8,6 +8,7 @@
 - [6. Java 21, Kafka, Flink](https://github.com/diegopacheco/java-pocs/tree/master/pocs/java-21-kafka-flink-windoning-eo-purchases)
 - [7. Java 21, Kafka, Spark](https://github.com/diegopacheco/java-pocs/tree/master/pocs/java-21-kafka-spark-windoning-eo-purchases)
 - [8. Rust 2024, Pure Memory - Stock Engine](https://github.com/diegopacheco/rust-playground/tree/master/in-memory-stock-engine)
+- [9. Zig 0.15.1, Pure Memory - Stock Engine](https://github.com/diegopacheco/zig-playground/tree/master/in-memory-stock-engine)
 
 ## Rationale
 
