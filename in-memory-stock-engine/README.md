@@ -7,7 +7,7 @@
 - [5. Java 25, Redis and Redis Streams](https://github.com/diegopacheco/java-pocs/tree/master/pocs/java-25-redis-windoning-eo-purchases)
 - [6. Java 21, Kafka, Flink](https://github.com/diegopacheco/java-pocs/tree/master/pocs/java-21-kafka-flink-windoning-eo-purchases)
 - [7. Java 21, Kafka, Spark](https://github.com/diegopacheco/java-pocs/tree/master/pocs/java-21-kafka-spark-windoning-eo-purchases)
-- [8. Rust 2024, Pure Memory - Stock Engine]()
+- [8. Rust 2024, Pure Memory - Stock Engine](https://github.com/diegopacheco/rust-playground/tree/master/in-memory-stock-engine)
 
 ## Rationale
 
@@ -28,6 +28,133 @@ Stock exchange application written in Rust.
 Imagine you want to be notified when something happens, some GOOGLE(GOOG) stock went up or down.
 There are some simple rules(Equal, GreaterThan,LessThan) when the stock price change. Fake Data generation techniques are used to generate a lot of data for benchmarks.
 Such solution would be used for Day Trading applications.
+
+### Design
+
+```mermaid
+classDiagram
+    class Event {
+        <<interface>>
+        +symbol() String
+        +value() f64
+    }
+
+    class StockUp {
+        -symbol: String
+        -value: f64
+        +new(String, f64) StockUp
+    }
+
+    class StockDown {
+        -symbol: String
+        -value: f64
+        +new(String, f64) StockDown
+    }
+
+    class Predicate {
+        <<interface>>
+        +matches(Event) bool
+    }
+
+    class Equal {
+        -symbol: String
+        -value: f64
+        +new(String, f64) Equal
+    }
+
+    class LessThan {
+        -symbol: String
+        -value: f64
+        +new(String, f64) LessThan
+    }
+
+    class GreaterThan {
+        -symbol: String
+        -value: f64
+        +new(String, f64) GreaterThan
+    }
+
+    class Matcher {
+        <<interface>>
+        +run(Vec~Event~) Vec~MaterializedMatch~
+    }
+
+    class InMemoryMatcher {
+        -predicates: Vec~Predicate~
+        +new(Vec~Predicate~) InMemoryMatcher
+    }
+
+    class MaterializedMatch {
+        -match_time: SystemTime
+        +new() MaterializedMatch
+    }
+
+    class EventGenerator {
+        <<interface>>
+        +generate(usize) Vec~Event~
+    }
+
+    class NasdaqEventGenerator {
+        +generate(usize) Vec~Event~
+        -create() Event
+    }
+
+    class PredicateGenerator {
+        <<interface>>
+        +generate(usize) Vec~Predicate~
+    }
+
+    class UserPredicatesGenerator {
+        +generate(usize) Vec~Predicate~
+        -create() Predicate
+    }
+
+    class Randomizer {
+        +value() f64
+        +symbol() String
+    }
+
+    class Main {
+        +main()
+        -benchmark(usize)
+        -benchmark_cap(usize, usize)
+    }
+
+    Event <|.. StockUp
+    Event <|.. StockDown
+    Predicate <|.. Equal
+    Predicate <|.. LessThan
+    Predicate <|.. GreaterThan
+    Matcher <|.. InMemoryMatcher
+    EventGenerator <|.. NasdaqEventGenerator
+    PredicateGenerator <|.. UserPredicatesGenerator
+
+    InMemoryMatcher --> Predicate
+    InMemoryMatcher --> Event
+    InMemoryMatcher --> MaterializedMatch
+    MaterializedMatch --> Event
+    MaterializedMatch --> Predicate
+
+    Main --> InMemoryMatcher
+    Main --> NasdaqEventGenerator
+    Main --> UserPredicatesGenerator
+
+    NasdaqEventGenerator --> Randomizer
+    NasdaqEventGenerator --> EventGenerator
+    NasdaqEventGenerator --> Event
+
+    UserPredicatesGenerator --> Randomizer
+    UserPredicatesGenerator --> PredicateGenerator
+    UserPredicatesGenerator --> Predicate
+```
+
+Color scheme:
+* Green: Traits (Interfaces)
+* Blue: Predicates (rules)
+* Purple: Fake data generation
+* Dark blue: Matching engine
+* Yellow: Raw events
+* Red: Main orchestration and benchmarks
 
 ### Benchmark
 
