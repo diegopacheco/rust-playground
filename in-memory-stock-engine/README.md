@@ -38,87 +38,103 @@ classDiagram
         +symbol() String
         +value() f64
     }
+    style Event fill:#90EE90
 
     class StockUp {
         -symbol: String
         -value: f64
         +new(String, f64) StockUp
     }
+    style StockUp fill:#FFFF99
 
     class StockDown {
         -symbol: String
         -value: f64
         +new(String, f64) StockDown
     }
+    style StockDown fill:#FFFF99
 
     class Predicate {
         <<interface>>
         +matches(Event) bool
     }
+    style Predicate fill:#90EE90
 
     class Equal {
         -symbol: String
         -value: f64
         +new(String, f64) Equal
     }
+    style Equal fill:#ADD8E6
 
     class LessThan {
         -symbol: String
         -value: f64
         +new(String, f64) LessThan
     }
+    style LessThan fill:#ADD8E6
 
     class GreaterThan {
         -symbol: String
         -value: f64
         +new(String, f64) GreaterThan
     }
+    style GreaterThan fill:#ADD8E6
 
     class Matcher {
         <<interface>>
         +run(Vec~Event~) Vec~MaterializedMatch~
     }
+    style Matcher fill:#90EE90
 
     class InMemoryMatcher {
         -predicates: Vec~Predicate~
         +new(Vec~Predicate~) InMemoryMatcher
     }
+    style InMemoryMatcher fill:#4682B4
 
     class MaterializedMatch {
         -match_time: SystemTime
         +new() MaterializedMatch
     }
+    style MaterializedMatch fill:#4682B4
 
     class EventGenerator {
         <<interface>>
         +generate(usize) Vec~Event~
     }
+    style EventGenerator fill:#90EE90
 
     class NasdaqEventGenerator {
         +generate(usize) Vec~Event~
         -create() Event
     }
+    style NasdaqEventGenerator fill:#DDA0DD
 
     class PredicateGenerator {
         <<interface>>
         +generate(usize) Vec~Predicate~
     }
+    style PredicateGenerator fill:#90EE90
 
     class UserPredicatesGenerator {
         +generate(usize) Vec~Predicate~
         -create() Predicate
     }
+    style UserPredicatesGenerator fill:#DDA0DD
 
     class Randomizer {
         +value() f64
         +symbol() String
     }
+    style Randomizer fill:#DDA0DD
 
     class Main {
         +main()
         -benchmark(usize)
         -benchmark_cap(usize, usize)
     }
+    style Main fill:#FFB6C1
 
     Event <|.. StockUp
     Event <|.. StockDown
@@ -149,12 +165,12 @@ classDiagram
 ```
 
 Color scheme:
-* Green: Traits (Interfaces)
-* Blue: Predicates (rules)
-* Purple: Fake data generation
-* Dark blue: Matching engine
-* Yellow: Raw events
-* Red: Main orchestration and benchmarks
+* Green (#90EE90): Traits (Interfaces)
+* Blue (#ADD8E6): Predicates (rules)
+* Purple (#DDA0DD): Fake data generation
+* Dark blue (#4682B4): Matching engine
+* Yellow (#FFFF99): Raw events
+* Red (#FFB6C1): Main orchestration and benchmarks
 
 ### Benchmark
 
