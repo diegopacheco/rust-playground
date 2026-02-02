@@ -1,0 +1,8 @@
+[package]
+name = "nannou-fun"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2024"
+
+[dependencies]
+nannou = "0.19"
