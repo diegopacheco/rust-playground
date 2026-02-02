@@ -1,0 +1,13 @@
+[package]
+name = "bf-tree-fun"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2024"
+rust-version = "1.93"
+
+[dependencies]
+bf-tree = "0.4.7"
+
+[[bin]]
+name = "bench"
+path = "src/main.rs"
