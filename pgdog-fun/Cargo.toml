@@ -1,0 +1,9 @@
+[package]
+name = "pgdog-fun"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2024"
+
+[dependencies]
+tokio = { version = "1.44", features = ["full"] }
+tokio-postgres = "0.7"

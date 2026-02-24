@@ -1,0 +1,11 @@
+[general]
+host = "0.0.0.0"
+port = 6432
+default_pool_size = 10
+pooler_mode = "transaction"
+
+[[databases]]
+name = "pgdog"
+host = "postgres"
+port = 5432
+database_name = "pgdog"

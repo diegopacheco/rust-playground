@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: pgdog
+      POSTGRES_PASSWORD: pgdog
+      POSTGRES_DB: pgdog
+    ports:
+      - "5432:5432"
+    networks:
+      - pgdog-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pgdog"]
+      interval: 1s
+      timeout: 5s
+      retries: 30
+  pgdog:
+    image: ghcr.io/pgdogdev/pgdog:latest
+    ports:
+      - "6432:6432"
+    volumes:
+      - ./pgdog.toml:/pgdog/pgdog.toml
+      - ./users.toml:/pgdog/users.toml
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pgdog-net
+networks:
+  pgdog-net:
+    driver: bridge

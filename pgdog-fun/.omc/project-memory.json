@@ -1,0 +1,119 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1771884326895,
+  "projectRoot": "/Users/diegopacheco/git/diegopacheco/rust-playground/pgdog-fun",
+  "techStack": {
+    "languages": [
+      {
+        "name": "Rust",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "Cargo.toml"
+        ]
+      }
+    ],
+    "frameworks": [],
+    "packageManager": "cargo",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "cargo build",
+    "testCommand": "cargo test",
+    "lintCommand": "cargo clippy",
+    "devCommand": "cargo run",
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "src"
+    ],
+    "gitBranches": {
+      "defaultBranch": "master",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "src": {
+      "path": "src",
+      "purpose": "Source code",
+      "fileCount": 1,
+      "lastAccessed": 1771884326831,
+      "keyFiles": [
+        "main.rs"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "README.md",
+      "accessCount": 4,
+      "lastAccessed": 1771890762741,
+      "type": "file"
+    },
+    {
+      "path": "src/main.rs",
+      "accessCount": 3,
+      "lastAccessed": 1771885212522,
+      "type": "file"
+    },
+    {
+      "path": "run-sql-client.sh",
+      "accessCount": 3,
+      "lastAccessed": 1771891006324,
+      "type": "file"
+    },
+    {
+      "path": "Cargo.toml",
+      "accessCount": 2,
+      "lastAccessed": 1771885200018,
+      "type": "file"
+    },
+    {
+      "path": "docker-compose.yaml",
+      "accessCount": 2,
+      "lastAccessed": 1771885243364,
+      "type": "file"
+    },
+    {
+      "path": "run.sh",
+      "accessCount": 2,
+      "lastAccessed": 1771885248213,
+      "type": "file"
+    },
+    {
+      "path": "pgdog.toml",
+      "accessCount": 2,
+      "lastAccessed": 1771890864541,
+      "type": "file"
+    },
+    {
+      "path": "users.toml",
+      "accessCount": 1,
+      "lastAccessed": 1771885218141,
+      "type": "file"
+    },
+    {
+      "path": "start.sh",
+      "accessCount": 1,
+      "lastAccessed": 1771885246329,
+      "type": "file"
+    },
+    {
+      "path": "stop.sh",
+      "accessCount": 1,
+      "lastAccessed": 1771885246639,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
