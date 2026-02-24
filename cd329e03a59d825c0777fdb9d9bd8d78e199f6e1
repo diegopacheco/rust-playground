@@ -1,0 +1,40 @@
+pgdog-fun/run-sql-client.sh
+  d34eb70d9503dfcc 1-3
+pgdog-fun/src/main.rs
+  d34eb70d9503dfcc 1-122
+pgdog-fun/pgdog.toml
+  d34eb70d9503dfcc 1-11
+pgdog-fun/users.toml
+  d34eb70d9503dfcc 1-4
+pgdog-fun/stop.sh
+  d34eb70d9503dfcc 1-2
+pgdog-fun/docker-compose.yaml
+  d34eb70d9503dfcc 1-32
+pgdog-fun/start.sh
+  d34eb70d9503dfcc 1-13
+pgdog-fun/README.md
+  d34eb70d9503dfcc 1-22,24-30,32-34,36-38,40
+pgdog-fun/Cargo.toml
+  d34eb70d9503dfcc 2,8-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.4",
+  "base_commit_sha": "cd329e03a59d825c0777fdb9d9bd8d78e199f6e1",
+  "prompts": {
+    "d34eb70d9503dfcc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4e345abd-52e1-4bc9-89f5-529e4894471f",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>",
+      "messages": [],
+      "total_additions": 239,
+      "total_deletions": 31,
+      "accepted_lines": 226,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/79c36670eb09a3babd9f6529766b7169c5a8429f8c54f4624fa57aa3dfdcd6b5"
+    }
+  }
+}
