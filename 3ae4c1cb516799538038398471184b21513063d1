@@ -1,0 +1,28 @@
+open-telemetry-rust-fun/run.sh
+  20e1d37bc2f07f04 3-14,24,30,32-39
+open-telemetry-rust-fun/docker-compose.yml
+  20e1d37bc2f07f04 11,13
+open-telemetry-rust-fun/start.sh
+  20e1d37bc2f07f04 4-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.10",
+  "base_commit_sha": "3ae4c1cb516799538038398471184b21513063d1",
+  "prompts": {
+    "20e1d37bc2f07f04": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "80bfa3c8-9b8d-449c-942a-f02c0ff72cbb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>",
+      "messages": [],
+      "total_additions": 26,
+      "total_deletions": 10,
+      "accepted_lines": 26,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/18e05b849c5f20d5275a38d2fff44618297176718f5c87ec71a8598113b98a25"
+    }
+  }
+}
