@@ -1,0 +1,24 @@
+open-telemetry-rust-fun/src/main.rs
+  20e1d37bc2f07f04 32,47
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.10",
+  "base_commit_sha": "68f841aae209bd0a05593c9069605c5783187afb",
+  "prompts": {
+    "20e1d37bc2f07f04": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "80bfa3c8-9b8d-449c-942a-f02c0ff72cbb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/834881eca3ddf2ff86750a7f76bd5dcd3ab777d2a9a0f137852446f2f6484d8e"
+    }
+  }
+}
