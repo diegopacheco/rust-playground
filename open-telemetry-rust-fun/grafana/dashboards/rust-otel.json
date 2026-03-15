@@ -7,7 +7,7 @@
   "links": [],
   "panels": [
     {
-      "title": "HTTP Requests Total (rate/s)",
+      "title": "HTTP Requests Rate (req/s)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
@@ -28,14 +28,14 @@
       "options": { "legend": { "displayMode": "list" }, "tooltip": { "mode": "multi" } },
       "targets": [
         {
-          "expr": "rate(http_requests_total[1m])",
+          "expr": "rate(http_requests_total[30s])",
           "legendFormat": "{{method}} {{path}}",
           "refId": "A"
         }
       ]
     },
     {
-      "title": "HTTP Errors Total (rate/s)",
+      "title": "HTTP Errors Rate (err/s)",
       "type": "timeseries",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
@@ -55,7 +55,7 @@
       "options": { "legend": { "displayMode": "list" }, "tooltip": { "mode": "multi" } },
       "targets": [
         {
-          "expr": "rate(http_errors_total[1m])",
+          "expr": "rate(http_errors_total[30s])",
           "legendFormat": "{{method}} {{path}}",
           "refId": "A"
         }
@@ -111,24 +111,24 @@
       "options": { "legend": { "displayMode": "list" }, "tooltip": { "mode": "multi" } },
       "targets": [
         {
-          "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[1m]))",
+          "expr": "histogram_quantile(0.50, rate(http_request_duration_seconds_bucket[30s]))",
           "legendFormat": "p50",
           "refId": "A"
         },
         {
-          "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[1m]))",
+          "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[30s]))",
           "legendFormat": "p95",
           "refId": "B"
         },
         {
-          "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[1m]))",
+          "expr": "histogram_quantile(0.99, rate(http_request_duration_seconds_bucket[30s]))",
           "legendFormat": "p99",
           "refId": "C"
         }
       ]
     },
     {
-      "title": "Total Requests (cumulative)",
+      "title": "Total Requests",
       "type": "stat",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 6, "w": 8, "x": 0, "y": 16 },
@@ -143,17 +143,18 @@
         },
         "overrides": []
       },
-      "options": { "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "options": { "colorMode": "value", "graphMode": "area", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
         {
           "expr": "http_requests_total",
           "legendFormat": "total",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ]
     },
     {
-      "title": "Total Errors (cumulative)",
+      "title": "Total Errors",
       "type": "stat",
       "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 6, "w": 8, "x": 8, "y": 16 },
@@ -169,12 +170,13 @@
         },
         "overrides": []
       },
-      "options": { "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "options": { "colorMode": "value", "graphMode": "area", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
         {
           "expr": "http_errors_total",
           "legendFormat": "errors",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ]
     },
@@ -197,12 +199,13 @@
         },
         "overrides": []
       },
-      "options": { "colorMode": "value", "graphMode": "area", "textMode": "auto" },
+      "options": { "colorMode": "value", "graphMode": "area", "textMode": "auto", "reduceOptions": { "calcs": ["lastNotNull"] } },
       "targets": [
         {
-          "expr": "rate(http_errors_total[1m]) / rate(http_requests_total[1m]) * 100",
+          "expr": "http_errors_total / http_requests_total * 100",
           "legendFormat": "error %",
-          "refId": "A"
+          "refId": "A",
+          "instant": true
         }
       ]
     }
