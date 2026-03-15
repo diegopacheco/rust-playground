@@ -1,0 +1,26 @@
+open-telemetry-rust-fun/grafana/dashboards/rust-otel.json
+  20e1d37bc2f07f04 12,40,67,96,133,158,184
+open-telemetry-rust-fun/grafana/provisioning/datasources/datasource.yml
+  20e1d37bc2f07f04 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.10",
+  "base_commit_sha": "98b157c0d3e2af8cbe3ea71a56f89f8cda8e9d11",
+  "prompts": {
+    "20e1d37bc2f07f04": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "80bfa3c8-9b8d-449c-942a-f02c0ff72cbb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>",
+      "messages": [],
+      "total_additions": 8,
+      "total_deletions": 7,
+      "accepted_lines": 8,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/884c30975459211c0c91f8de0e93b1eb55ede606e1ead91b7afe20cae4956eaa"
+    }
+  }
+}
