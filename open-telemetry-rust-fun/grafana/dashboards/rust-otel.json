@@ -9,7 +9,7 @@
     {
       "title": "HTTP Requests Total (rate/s)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
       "fieldConfig": {
         "defaults": {
@@ -37,7 +37,7 @@
     {
       "title": "HTTP Errors Total (rate/s)",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
       "fieldConfig": {
         "defaults": {
@@ -64,7 +64,7 @@
     {
       "title": "Active Requests",
       "type": "gauge",
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 8, "w": 6, "x": 0, "y": 8 },
       "fieldConfig": {
         "defaults": {
@@ -93,7 +93,7 @@
     {
       "title": "Request Duration p50 / p95 / p99",
       "type": "timeseries",
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 8, "w": 18, "x": 6, "y": 8 },
       "fieldConfig": {
         "defaults": {
@@ -130,7 +130,7 @@
     {
       "title": "Total Requests (cumulative)",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 6, "w": 8, "x": 0, "y": 16 },
       "fieldConfig": {
         "defaults": {
@@ -155,7 +155,7 @@
     {
       "title": "Total Errors (cumulative)",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 6, "w": 8, "x": 8, "y": 16 },
       "fieldConfig": {
         "defaults": {
@@ -181,7 +181,7 @@
     {
       "title": "Error Rate %",
       "type": "stat",
-      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
       "gridPos": { "h": 6, "w": 8, "x": 16, "y": 16 },
       "fieldConfig": {
         "defaults": {
