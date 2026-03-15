@@ -28,7 +28,7 @@
       "options": { "legend": { "displayMode": "list" }, "tooltip": { "mode": "multi" } },
       "targets": [
         {
-          "expr": "rate(http_requests_total[1m])",
+          "expr": "rate(http_requests_total{otel_scope_name="http_server"}[1m])",
           "legendFormat": "{{method}} {{path}}",
           "refId": "A"
         }
@@ -55,7 +55,7 @@
       "options": { "legend": { "displayMode": "list" }, "tooltip": { "mode": "multi" } },
       "targets": [
         {
-          "expr": "rate(http_errors_total[1m])",
+          "expr": "rate(http_errors_total{otel_scope_name="http_server"}[1m])",
           "legendFormat": "{{method}} {{path}}",
           "refId": "A"
         }
@@ -200,7 +200,7 @@
       "options": { "colorMode": "value", "graphMode": "area", "textMode": "auto" },
       "targets": [
         {
-          "expr": "rate(http_errors_total[1m]) / rate(http_requests_total[1m]) * 100",
+          "expr": "rate(http_errors_total{otel_scope_name="http_server"}[1m]) / rate(http_requests_total{otel_scope_name="http_server"}[1m]) * 100",
           "legendFormat": "error %",
           "refId": "A"
         }

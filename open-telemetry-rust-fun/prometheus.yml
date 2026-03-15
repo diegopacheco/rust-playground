@@ -5,4 +5,4 @@ global:
 scrape_configs:
   - job_name: 'rust-otel-app'
     static_configs:
-      - targets: ['host.containers.internal:8080']
+      - targets: ['host.docker.internal:8080']
