@@ -29,7 +29,7 @@ async fn work(req: HttpRequest, data: web::Data<Arc<AppState>>) -> HttpResponse 
     let meter = data.meter_provider.meter("http_server");
 
     let request_counter = meter
-        .u64_counter("http_requests_total")
+        .u64_counter("http_requests")
         .with_description("Total HTTP requests")
         .build();
 
@@ -44,7 +44,7 @@ async fn work(req: HttpRequest, data: web::Data<Arc<AppState>>) -> HttpResponse 
         .build();
 
     let error_counter = meter
-        .u64_counter("http_errors_total")
+        .u64_counter("http_errors")
         .with_description("Total HTTP errors")
         .build();
 
