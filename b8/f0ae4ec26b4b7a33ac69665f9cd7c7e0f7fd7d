@@ -1,0 +1,26 @@
+honker-fun/README.md
+  s_b590f5fd36537a::t_7fc17e8d590577 1-30
+honker-fun/run.sh
+  s_b590f5fd36537a::t_f1c7770f3dd572 2-3
+honker-fun/Cargo.toml
+  s_b590f5fd36537a::t_91dbdf800af4c9 8-9
+honker-fun/src/main.rs
+  s_b590f5fd36537a::t_dfdd8567b61653 1,3-10,15-21,23,26,29-32
+  s_b590f5fd36537a::t_d3b8445bb71fb0 2,11-14,22,24-25,27-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "b8f0ae4ec26b4b7a33ac69665f9cd7c7e0f7fd7d",
+  "prompts": {},
+  "sessions": {
+    "s_b590f5fd36537a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8a941223-c284-4643-9f01-70a8d13540b3",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
