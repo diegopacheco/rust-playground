@@ -1,0 +1,36 @@
+rust-cargo-nexttest-fun/src/lib.rs
+  s_9886d25f368b71::t_d5b4423a19e248 1-41,46-55
+  s_9886d25f368b71::t_e261201539eab3 42-45
+rust-cargo-nexttest-fun/test.sh
+  s_9886d25f368b71::t_d5b4423a19e248 1-6
+rust-cargo-nexttest-fun/Cargo.toml
+  s_9886d25f368b71::t_d5b4423a19e248 1-7
+rust-cargo-nexttest-fun/run.sh
+  s_9886d25f368b71::t_d5b4423a19e248 1-3
+rust-cargo-nexttest-fun/README.md
+  s_9886d25f368b71::t_d5b4423a19e248 1-29
+  h_8e2c3875396153 30-71
+rust-cargo-nexttest-fun/tests/basic.rs
+  s_9886d25f368b71::t_d5b4423a19e248 1-153
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "15e5f0be6eadcb4000f284a58c7cbd0c7341269d",
+  "prompts": {},
+  "humans": {
+    "h_8e2c3875396153": {
+      "author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9886d25f368b71": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f460b-b620-7e21-8483-06776e60e13c",
+        "model": "gpt-5.5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
