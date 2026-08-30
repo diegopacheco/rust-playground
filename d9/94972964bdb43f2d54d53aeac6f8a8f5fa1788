@@ -1,0 +1,38 @@
+sqlite-manager/README.md
+  s_5bdf12639a1b12::t_1ec7a674a0e95a 25,120,185-216
+  s_5bdf12639a1b12::t_17ac1892427573 220
+sqlite-manager/src/main.rs
+  s_5bdf12639a1b12::t_1276a3d375e0b7 5
+sqlite-manager/src/shell.rs
+  s_5bdf12639a1b12::t_15a28d0ab633fb 33,101-115,117,125,132-133,135-139,150,168-169,172-173,176-178,188-189,293-300,366
+  s_5bdf12639a1b12::t_dd69da764d01d8 179-187,190-199
+  s_5bdf12639a1b12::t_52e20623f67f4b 120-124,126-131,134,155-167,170-171,174-175
+  s_5bdf12639a1b12::t_a2d940f3b4a4cc 200
+sqlite-manager/src/describe.rs
+  s_5bdf12639a1b12::t_db50bad898e44a 1-7,15-66,77-86
+  s_5bdf12639a1b12::t_0d4b49f87eb083 8-14,67-76
+sqlite-manager/tests/roundtrip.rs
+  s_5bdf12639a1b12::t_cc7f38a17decdd 38-58,410-441,446-448,450
+  s_5bdf12639a1b12::t_0d4b49f87eb083 442-445,449
+sqlite-manager/src/dictionary.rs
+  s_5bdf12639a1b12::t_1276a3d375e0b7 4,29-33
+sqlite-manager/src/db.rs
+  s_5bdf12639a1b12::t_b5c7fbdfa07a4d 178-179,229-295
+  s_5bdf12639a1b12::t_5dc504c7d3f28c 296
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d994972964bdb43f2d54d53aeac6f8a8f5fa1788",
+  "prompts": {},
+  "sessions": {
+    "s_5bdf12639a1b12": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a523f3ca-b5bb-4cf2-a5ac-9345c31d2390",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
