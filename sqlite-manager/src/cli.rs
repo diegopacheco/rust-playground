@@ -5,33 +5,38 @@ use crate::error::DumpError;
 const EXTENSIONS: [&str; 4] = ["db", "sqlite", "sqlite3", "db3"];
 
 pub const USAGE: &str = "\
-sqlite-manager - dump, restore and verify SQLite databases
+🗃️  sqlite-manager - dump, restore and verify SQLite databases
 
 USAGE:
-    sqlite-manager <COMMAND> [ARGS]
+    sqlite-manager [--safe] <COMMAND> [ARGS]
 
 COMMANDS:
-    dump   [PATH] [-o DIR]     read a database and write schema.sql and data.sql
+    📦 dump   [PATH] [-o DIR]   read a database and write schema.sql and data.sql
                                PATH is a database file or a directory to search,
                                and defaults to the current directory
                                -o defaults to ./dump
 
-    import <DIR> [-o FILE]     rebuild a database from a dump directory
+    📥 import <DIR> [-o FILE]   rebuild a database from a dump directory
                                -o defaults to ./restored.db
                                --force overwrites an existing target
 
-    check  <DIR>               rebuild a dump in a scratch database and report
+    🔎 check  <DIR>             rebuild a dump in a scratch database and report
                                whether it is sound
 
-    sql    [PATH] [--write]    open a SQL shell with syntax highlighting,
+    🐚 sql    [PATH] [--write]  open a SQL shell with syntax highlighting,
                                line numbers, tab completion and table output
                                read only unless --write is passed
 
-    dict   [PATH]              print the data dictionary: tables, columns,
+    📖 dict   [PATH]            print the data dictionary: tables, columns,
                                indexes, views, triggers and relations
 
-    help                       print this help
-    version                    print the version
+    ❓ help                     print this help
+    🏷️  version                  print the version
+
+OPTIONS:
+    🔒 --safe                   read only mode, may be given anywhere on the
+                               line. Refuses import and sql --write, so no
+                               database file is ever opened for writing.
 
 Dumping never writes to, locks, or moves the source database.
 Importing never writes to the dump it reads.
@@ -53,6 +58,7 @@ pub enum Command {
     Sql {
         database: PathBuf,
         write: bool,
+        safe: bool,
     },
     Dictionary {
         database: PathBuf,
@@ -62,7 +68,17 @@ pub enum Command {
 }
 
 pub fn parse<I: IntoIterator<Item = String>>(arguments: I) -> Result<Command, DumpError> {
-    let mut arguments = arguments.into_iter().peekable();
+    let mut safe = false;
+    let mut given: Vec<String> = Vec::new();
+    for argument in arguments {
+        if argument == "--safe" {
+            safe = true;
+        } else {
+            given.push(argument);
+        }
+    }
+
+    let mut arguments = given.into_iter();
     let Some(name) = arguments.next() else {
         return Ok(Command::Help);
     };
@@ -71,9 +87,12 @@ pub fn parse<I: IntoIterator<Item = String>>(arguments: I) -> Result<Command, Du
         "help" | "-h" | "--help" => Ok(Command::Help),
         "version" | "-V" | "--version" => Ok(Command::Version),
         "dump" => dump(arguments),
+        "import" if safe => Err(DumpError::Blocked(
+            "import builds a database, so it cannot run".to_string(),
+        )),
         "import" => import(arguments),
         "check" => check(arguments),
-        "sql" => sql(arguments),
+        "sql" => sql(arguments, safe),
         "dictionary" | "dict" => dictionary(arguments),
         other => Err(DumpError::Usage(format!(
             "unknown command: {other}, try: sqlite-manager help"
@@ -111,11 +130,17 @@ fn check<I: Iterator<Item = String>>(arguments: I) -> Result<Command, DumpError>
     Ok(Command::Check { source })
 }
 
-fn sql<I: Iterator<Item = String>>(arguments: I) -> Result<Command, DumpError> {
+fn sql<I: Iterator<Item = String>>(arguments: I, safe: bool) -> Result<Command, DumpError> {
     let options = Options::read(arguments, "sql")?;
+    if safe && options.write {
+        return Err(DumpError::Blocked(
+            "sql --write opens the database for writing, so it cannot run".to_string(),
+        ));
+    }
     Ok(Command::Sql {
         database: resolve(options.value.as_deref())?,
         write: options.write,
+        safe,
     })
 }
 

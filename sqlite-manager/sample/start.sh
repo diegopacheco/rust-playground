@@ -41,4 +41,4 @@ fi
 
 echo "api http://localhost:7777"
 echo "ui  http://localhost:5173"
-echo "db  $(pwd)/app.db"
+echo "db  $(pwd)/sample.db"

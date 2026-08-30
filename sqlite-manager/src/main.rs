@@ -22,7 +22,7 @@ use error::DumpError;
 
 fn main() {
     if let Err(failure) = run() {
-        eprintln!("sqlite-manager: {failure}");
+        eprintln!("❌ sqlite-manager: {failure}");
         std::process::exit(1);
     }
 }
@@ -34,7 +34,11 @@ fn run() -> Result<(), DumpError> {
             Ok(())
         }
         Command::Version => {
-            println!("{} {}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
+            println!(
+                "🏷️  {} {}",
+                env!("CARGO_PKG_NAME"),
+                env!("CARGO_PKG_VERSION")
+            );
             Ok(())
         }
         Command::Dump { database, output } => dump::run(&database, &output),
@@ -44,7 +48,11 @@ fn run() -> Result<(), DumpError> {
             force,
         } => import::run(&source, &target, force),
         Command::Check { source } => check::run(&source),
-        Command::Sql { database, write } => shell::run(&database, write),
+        Command::Sql {
+            database,
+            write,
+            safe,
+        } => shell::run(&database, write, safe),
         Command::Dictionary { database } => dictionary::run(&database),
     }
 }

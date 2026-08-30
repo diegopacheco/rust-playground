@@ -23,6 +23,7 @@ Schema objects come out of `sqlite_master` in dependency order. Row data is stre
 - **`check`** — replays a dump into a scratch database and runs integrity and foreign key checks. A backup you have never restored is not a backup.
 - **`sql`** — an interactive shell with SQL syntax highlighting, line numbers, tab completion over keywords, tables and columns, multi-line statements and box-drawn result tables. Read only unless `--write` is passed.
 - **`dict`** — the data dictionary: every table with its columns, types, constraints, indexes, views, triggers and the full relation graph. Answers "what is in this database" in one screen.
+- **`--safe`** — read only mode. It refuses `import` and `sql --write`, so no database file is ever opened for writing. It may be given anywhere on the line.
 - **Never touches the source** — read only and immutable by default, private copy when a log is hot, and a guard that refuses to write output over the database being read.
 - **Fine grained progress** — a bar per stage and a nested bar per table with live row counts, so a long dump tells you exactly which table it is on.
 - **Faithful values** — blobs as hex, invalid UTF-8 as a cast blob, full float precision, doubled quotes in text and identifiers, `sqlite_sequence` restored so `AUTOINCREMENT` continues where it left off.
@@ -33,14 +34,14 @@ Schema objects come out of `sqlite_master` in dependency order. Row data is stre
 - **rusqlite (bundled SQLite)** — SQLite is compiled into the binary, so there is no system SQLite version to match.
 - **indicatif** — the multi-bar progress rendering; it hides itself when output is piped.
 - **rustyline** — line editing for the `sql` shell, driving the highlighter and completer.
-- **Bun + Vite + React** (in `app/`) — a small notes app that writes to SQLite, used to exercise the CLI against a live, actively written database.
+- **Bun + Vite + React** (in `sample/`) — a small notes app that writes to SQLite, used to exercise the CLI against a live, actively written database.
 
 Argument parsing is hand written rather than pulled from a crate; the surface is small enough that a dependency would cost more than it saves.
 
 ## Commands
 
 ```
-sqlite-manager <COMMAND> [ARGS]
+sqlite-manager [--safe] <COMMAND> [ARGS]
 
 dump   [PATH] [-o DIR]     read a database and write schema.sql and data.sql
 import <DIR> [-o FILE]     rebuild a database from a dump directory (--force to overwrite)
@@ -49,13 +50,47 @@ sql    [PATH] [--write]    SQL shell with highlighting, line numbers, completion
 dict   [PATH]              print the data dictionary
 help                       print the help
 version                    print the version
+
+--safe                     read only, refuses import and sql --write
 ```
 
 `PATH` may be a database file or a directory to search; it defaults to the current directory. Running with no arguments prints the help.
 
+### Safe mode
+
+`--safe` is the guarantee that a session cannot write a database, whoever types the rest of the line:
+
+```bash
+$ sqlite-manager --safe import backup -o restored.db
+❌ sqlite-manager: 🔒 --safe is on, import builds a database, so it cannot run
+
+$ sqlite-manager --safe sql sample/dbs/store.db --write
+❌ sqlite-manager: 🔒 --safe is on, sql --write opens the database for writing, so it cannot run
+```
+
+`dump`, `check` and `dict` never write a database, so they run unchanged under `--safe`.
+
+## Sample databases
+
+`sample/dbs/` holds three ready-made SQLite databases to try the commands against:
+
+| Database | Contents |
+| --- | --- |
+| `store.db` | customers, products, orders and order items, with two indexes and an `open_orders` view |
+| `library.db` | authors, books, members and loans, with a partial index and an `open_loans` view |
+| `metrics.db` | four hosts and 3,000 metric samples, the one large enough for the progress bars to show |
+
+```bash
+sqlite-manager dict sample/dbs/store.db
+sqlite-manager --safe sql sample/dbs/library.db
+sqlite-manager dump sample/dbs/metrics.db -o backup
+```
+
+Each one is built from the `.sql` file beside it, so `sample/dbs/build.sh` recreates all three from scratch.
+
 ### Notes app API
 
-The app in `app/` is a plain REST service on `http://localhost:7777`.
+The app in `sample/` is a plain REST service on `http://localhost:7777`.
 
 | Method | Path | Body | Returns |
 | --- | --- | --- | --- |
@@ -81,7 +116,7 @@ The app in `app/` is a plain REST service on `http://localhost:7777`.
 
 ```bash
 ./build.sh          # fmt check, clippy with warnings denied, release build
-./test.sh           # 14 unit tests and 6 end-to-end tests
+./test.sh           # 14 unit tests and 7 end-to-end tests
 ./install.sh        # builds and installs to /usr/local/bin (BIN_DIR= to override)
 ./uninstall.sh      # removes it again
 ./run.sh dump ./my.db -o backup
@@ -92,27 +127,27 @@ The end-to-end tests drive the real binary: they assert the source file is byte 
 ### What it looks like
 
 ```
-$ sqlite-manager dump app/app.db -o backup
-source  /path/to/app/app.db
-target  backup
-note    a write-ahead log was merged from a private copy, the source was left alone
+$ sqlite-manager dump sample/sample.db -o backup
+📦 source  /path/to/sample/sample.db
+📁 target  backup
+🧊 note    a write-ahead log was merged from a private copy, the source was left alone
 
-schema.sql     1018 B  7 objects
-data.sql     720.8 KB  5 tables, 5,018 rows
+🧱 schema.sql     1018 B  7 objects
+🧾 data.sql     720.8 KB  5 tables, 5,018 rows
 
 $ sqlite-manager check backup
-checking  backup
+🔎 checking  backup
 
-schema.sql     1018 B  7 objects
-data.sql     720.8 KB  5,018 rows
+🧱 schema.sql     1018 B  7 objects
+🧾 data.sql     720.8 KB  5,018 rows
 
-the dump rebuilds cleanly and is sound
+✅ the dump rebuilds cleanly and is sound
 
 $ sqlite-manager import backup -o restored.db
-source  backup
-target  restored.db
+📁 source  backup
+💾 target  restored.db
 
-restored  528.0 KB  7 objects, 5,018 rows
+✅ restored  528.0 KB  7 objects, 5,018 rows
 ```
 
 While a dump runs, a bar tracks the stage and a nested bar tracks the table:
@@ -125,11 +160,11 @@ While a dump runs, a bar tracks the stage and a nested bar tracks the table:
 `dict` prints the schema and the relation graph:
 
 ```
-$ sqlite-manager dict app/app.db
-database  /path/to/app/app.db
+$ sqlite-manager dict sample/sample.db
+📖 database  /path/to/sample/sample.db
 4 tables, 1 view, 2 indexes, 0 triggers
 
-TABLE notes  (5,002 rows)
+🧱 TABLE notes  (5,002 rows)
   id          INTEGER  primary key
   author_id   INTEGER  not null
   title       TEXT     not null
@@ -149,7 +184,7 @@ RELATIONS
 `sql` opens the shell. Keywords colour as you type, the prompt counts lines, Tab completes, and results come back as tables:
 
 ```
-sqlite-manager sql app/app.db  (read only)
+🐚 sqlite-manager sql sample/sample.db  (👀 read only)
 .help lists the shell commands, .quit leaves
 
    1 sql> SELECT a.name, count(*) AS notes
@@ -167,10 +202,10 @@ sqlite-manager sql app/app.db  (read only)
 
 ## The notes app
 
-`app/` holds a small React app served by Vite, with a Bun API that writes to `app/app.db` in WAL mode. It exists so the CLI can be exercised against a database that a real process is holding open and writing to.
+`sample/` holds a small React app served by Vite, with a Bun API that writes to `sample/sample.db` in WAL mode. It exists so the CLI can be exercised against a database that a real process is holding open and writing to.
 
 ```bash
-cd app
+cd sample
 ./start.sh     # installs if needed, starts the API on :7777 and the UI on :5173
 ./stop.sh      # stops both
 ```
@@ -178,14 +213,14 @@ cd app
 Then, while it is still running:
 
 ```bash
-sqlite-manager dict app/app.db
-sqlite-manager dump app/app.db -o backup
+sqlite-manager dict sample/sample.db
+sqlite-manager dump sample/sample.db -o backup
 sqlite-manager check backup
 ```
 
 ### Screens
 
-The app opens empty, with the author picker, the note form and the seed button. The header reads the counts straight out of SQLite, so it shows `0 notes` against the freshly created `app/app.db`.
+The app opens empty, with the author picker, the note form and the seed button. The header reads the counts straight out of SQLite, so it shows `0 notes` against the freshly created `sample/sample.db`.
 
 ![empty](printscreens/01-empty.png)
 
@@ -193,6 +228,6 @@ After two notes are added, each row shows its author, timestamp and tags, all re
 
 ![notes](printscreens/02-notes.png)
 
-`seed 5,000 rows` inserts five thousand notes in one transaction, which pushes most of the data into the write-ahead log rather than the main database file. That is the interesting case: `app.db` itself stays tiny while `app.db-wal` grows, and dumping it is what exercises the private-copy path.
+`seed 5,000 rows` inserts five thousand notes in one transaction, which pushes most of the data into the write-ahead log rather than the main database file. That is the interesting case: `sample.db` itself stays tiny while `sample.db-wal` grows, and dumping it is what exercises the private-copy path.
 
 ![seeded](printscreens/03-seeded.png)

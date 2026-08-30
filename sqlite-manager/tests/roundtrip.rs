@@ -340,3 +340,49 @@ fn no_arguments_prints_the_help_and_unknown_commands_fail() {
     assert!(!bogus.status.success());
     assert!(String::from_utf8_lossy(&bogus.stderr).contains("unknown command"));
 }
+
+#[test]
+fn safe_mode_refuses_every_command_that_would_write_a_database() {
+    let sandbox = Sandbox::new("safe");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+    let before = fingerprint(&source);
+
+    let dump = sandbox.path("dump");
+    assert!(
+        run(&[
+            "--safe",
+            "dump",
+            source.to_str().unwrap(),
+            "-o",
+            dump.to_str().unwrap()
+        ])
+        .status
+        .success(),
+        "dump only reads the database, safe mode should allow it"
+    );
+
+    let restored = sandbox.path("restored.db");
+    let blocked = run(&[
+        "--safe",
+        "import",
+        dump.to_str().unwrap(),
+        "-o",
+        restored.to_str().unwrap(),
+    ]);
+    assert!(!blocked.status.success());
+    assert!(String::from_utf8_lossy(&blocked.stderr).contains("--safe"));
+    assert!(!restored.exists(), "safe mode created a database file");
+
+    let blocked = run(&["sql", source.to_str().unwrap(), "--write", "--safe"]);
+    assert!(
+        !blocked.status.success(),
+        "safe mode opened the database for writing"
+    );
+
+    assert_eq!(
+        before,
+        fingerprint(&source),
+        "safe mode modified the source database"
+    );
+}

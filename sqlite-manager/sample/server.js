@@ -2,7 +2,7 @@ import { Database } from "bun:sqlite";
 import { readFileSync } from "node:fs";
 
 const PORT = 7777;
-const db = new Database("app.db", { create: true });
+const db = new Database("sample.db", { create: true });
 db.exec(readFileSync("schema.sql", "utf8"));
 db.exec("PRAGMA foreign_keys = ON");
 
@@ -111,4 +111,4 @@ const server = Bun.serve({
   }
 });
 
-console.log(`notes api on http://localhost:${server.port} writing to app.db`);
+console.log(`notes api on http://localhost:${server.port} writing to sample.db`);

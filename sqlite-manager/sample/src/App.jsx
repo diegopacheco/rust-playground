@@ -64,7 +64,7 @@ export default function App() {
         <h1>Notes</h1>
         <p>
           {stats.notes} notes · {stats.authors} authors · {stats.tags} tags · stored in
-          <code>app/app.db</code>
+          <code>sample/sample.db</code>
         </p>
       </header>
 

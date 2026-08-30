@@ -13,7 +13,7 @@ pub fn run(database: &Path) -> Result<(), DumpError> {
         .filter(|table| !table.name.starts_with("sqlite_"))
         .collect();
 
-    println!("database  {}", source.path().display());
+    println!("📖 database  {}", source.path().display());
     println!(
         "{}, {}, {}, {}\n",
         report::count(tables.len(), "table"),
@@ -26,7 +26,7 @@ pub fn run(database: &Path) -> Result<(), DumpError> {
 
     for table in &tables {
         println!(
-            "TABLE {}  ({})",
+            "🧱 TABLE {}  ({})",
             table.name,
             report::count(table.rows as usize, "row")
         );

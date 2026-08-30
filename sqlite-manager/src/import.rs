@@ -26,8 +26,8 @@ pub fn run(source: &Path, target: &Path, force: bool) -> Result<(), DumpError> {
     }
 
     let progress = Progress::new();
-    progress.note(&format!("source  {}", source.display()));
-    progress.note(&format!("target  {}", target.display()));
+    progress.note(&format!("📁 source  {}", source.display()));
+    progress.note(&format!("💾 target  {}", target.display()));
 
     let connection = Connection::open(target)?;
     let schema = script::load(&connection, &files.schema, "schema", &progress)?;
@@ -36,7 +36,7 @@ pub fn run(source: &Path, target: &Path, force: bool) -> Result<(), DumpError> {
 
     progress.note("");
     progress.note(&format!(
-        "restored  {}  {}, {}",
+        "✅ restored  {}  {}, {}",
         report::size(target),
         report::count(schema.creates as usize, "object"),
         report::count(data.inserts as usize, "row")

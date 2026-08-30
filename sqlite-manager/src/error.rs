@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 #[derive(Debug)]
 pub enum DumpError {
     Usage(String),
+    Blocked(String),
     MissingDatabase(PathBuf),
     NoDatabase(PathBuf),
     AmbiguousDatabase(Vec<PathBuf>),
@@ -31,6 +32,7 @@ impl fmt::Display for DumpError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             DumpError::Usage(message) => write!(formatter, "{message}"),
+            DumpError::Blocked(message) => write!(formatter, "🔒 --safe is on, {message}"),
             DumpError::MissingDatabase(path) => {
                 write!(formatter, "no such database file: {}", path.display())
             }

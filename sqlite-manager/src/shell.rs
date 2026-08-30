@@ -17,13 +17,17 @@ use crate::highlight::{self, BOLD, DIM, RED, RESET};
 use crate::script;
 use crate::table::{Grid, cell};
 
-pub fn run(database: &Path, writable: bool) -> Result<(), DumpError> {
+pub fn run(database: &Path, writable: bool, safe: bool) -> Result<(), DumpError> {
     let path = std::fs::canonicalize(database).map_err(|e| DumpError::io(database, e))?;
     let connection = open(&path, writable)?;
 
-    let mode = if writable { "read write" } else { "read only" };
+    let mode = match (writable, safe) {
+        (true, _) => "✏️  read write",
+        (false, true) => "🔒 safe, read only",
+        (false, false) => "👀 read only",
+    };
     println!(
-        "{BOLD}sqlite-manager sql{RESET}  {}  ({mode})",
+        "🐚 {BOLD}sqlite-manager sql{RESET}  {}  ({mode})",
         path.display()
     );
     println!("{DIM}.help lists the shell commands, .quit leaves{RESET}\n");
@@ -68,7 +72,7 @@ pub fn run(database: &Path, writable: bool) -> Result<(), DumpError> {
             }
             Err(ReadlineError::Interrupted) => {
                 pending.clear();
-                println!("{DIM}cancelled{RESET}");
+                println!("{DIM}🚫 cancelled{RESET}");
             }
             Err(ReadlineError::Eof) => break,
             Err(failure) => return Err(DumpError::Shell(failure)),
@@ -116,7 +120,7 @@ fn handle_command(line: &str, connection: &Connection) -> Result<bool, DumpError
             }
             None => execute(connection, "SELECT type, name, sql FROM sqlite_master"),
         },
-        other => println!("unknown shell command: {other}, try .help"),
+        other => println!("❓ unknown shell command: {other}, try .help"),
     }
     Ok(true)
 }
@@ -125,7 +129,7 @@ fn execute(connection: &Connection, statement: &str) {
     match query(connection, statement) {
         Ok(Outcome::Rows(grid)) => {
             if grid.len() == 0 {
-                println!("{DIM}no rows{RESET}\n");
+                println!("{DIM}🫙 no rows{RESET}\n");
                 return;
             }
             print!("{}", grid.render());
@@ -137,7 +141,7 @@ fn execute(connection: &Connection, statement: &str) {
                 crate::report::count(count, "row changed")
             );
         }
-        Err(failure) => println!("{RED}error{RESET} {failure}\n"),
+        Err(failure) => println!("{RED}❌ error{RESET} {failure}\n"),
     }
 }
 
@@ -213,10 +217,10 @@ const TABLES: &str = "SELECT name, type FROM pragma_table_list \
                       AND name NOT LIKE 'sqlite\\_%' ESCAPE '\\' \
                       ORDER BY type, name";
 
-const HELP: &str = "  .tables            list tables and views
-  .schema [TABLE]    show the SQL that defines the schema
-  .help              this list
-  .quit              leave the shell
+const HELP: &str = "  📋 .tables            list tables and views
+  🧱 .schema [TABLE]    show the SQL that defines the schema
+  ❓ .help              this list
+  👋 .quit              leave the shell
 
   Statements run when they are complete, so a statement can span
   several lines. Tab completes keywords, tables and columns.

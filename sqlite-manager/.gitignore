@@ -18,3 +18,5 @@ dist/
 .vite.pid
 
 .DS_Store
+
+!sample/dbs/*.db

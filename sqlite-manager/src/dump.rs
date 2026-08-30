@@ -17,11 +17,11 @@ pub fn run(database: &Path, output: &Path) -> Result<(), DumpError> {
     guard_source(&source, &[&schema_path, &data_path])?;
 
     let progress = Progress::new();
-    progress.note(&format!("source  {}", source.path().display()));
-    progress.note(&format!("target  {}", output.display()));
+    progress.note(&format!("📦 source  {}", source.path().display()));
+    progress.note(&format!("📁 target  {}", output.display()));
     if source.merged_log() {
         progress.note(
-            "note    a write-ahead log was merged from a private copy, \
+            "🧊 note    a write-ahead log was merged from a private copy, \
              the source was left alone",
         );
     }
@@ -38,12 +38,12 @@ pub fn run(database: &Path, output: &Path) -> Result<(), DumpError> {
 
     progress.note("");
     progress.note(&format!(
-        "schema.sql  {:>9}  {}",
+        "🧱 schema.sql  {:>9}  {}",
         report::size(&schema_path),
         report::count(objects.len(), "object")
     ));
     progress.note(&format!(
-        "data.sql    {:>9}  {}, {}",
+        "🧾 data.sql    {:>9}  {}, {}",
         report::size(&data_path),
         report::count(tables.len(), "table"),
         report::count(rows as usize, "row")

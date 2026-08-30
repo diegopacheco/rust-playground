@@ -14,7 +14,7 @@ pub fn run(source: &Path) -> Result<(), DumpError> {
     let workspace = Workspace::create()?;
 
     let progress = Progress::new();
-    progress.note(&format!("checking  {}", source.display()));
+    progress.note(&format!("🔎 checking  {}", source.display()));
 
     let connection = Connection::open(workspace.database())?;
     let schema = script::load(&connection, &files.schema, "schema", &progress)?;
@@ -33,19 +33,19 @@ pub fn run(source: &Path) -> Result<(), DumpError> {
 
     progress.note("");
     progress.note(&format!(
-        "schema.sql  {:>9}  {}",
+        "🧱 schema.sql  {:>9}  {}",
         report::size(&files.schema),
         report::count(schema.creates as usize, "object")
     ));
     progress.note(&format!(
-        "data.sql    {:>9}  {}",
+        "🧾 data.sql    {:>9}  {}",
         report::size(&files.data),
         report::count(data.inserts as usize, "row")
     ));
 
     if problems.is_empty() {
         progress.note("");
-        progress.note("the dump rebuilds cleanly and is sound");
+        progress.note("✅ the dump rebuilds cleanly and is sound");
         return Ok(());
     }
     Err(DumpError::Unsound(problems))
