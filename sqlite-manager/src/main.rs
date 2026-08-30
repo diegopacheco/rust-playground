@@ -1,5 +1,6 @@
 mod check;
 mod cli;
+mod command;
 mod data;
 mod db;
 mod describe;
@@ -10,7 +11,9 @@ mod error;
 mod highlight;
 mod import;
 mod manifest;
+mod pipe;
 mod progress;
+mod query;
 mod report;
 mod schema;
 mod script;
@@ -55,6 +58,11 @@ fn run() -> Result<(), DumpError> {
             write,
             safe,
         } => shell::run(&database, write, safe),
+        Command::Pipe {
+            database,
+            statement,
+            write,
+        } => pipe::run(&database, statement.as_deref(), write),
         Command::Dictionary { database } => dictionary::run(&database),
     }
 }

@@ -29,6 +29,11 @@ COMMANDS:
                                line numbers, tab completion and table output
                                read only unless --write is passed
 
+    🚰 sql-pipe <PATH> [SQL]    run SQL once and print the result, no shell
+                               SQL is the rest of the line, or stdin when the
+                               rest of the line is empty
+                               read only unless --write is given before PATH
+
     📖 dict   [PATH]            print the data dictionary: tables, columns,
                                indexes, views, triggers and relations
 
@@ -37,8 +42,9 @@ COMMANDS:
 
 OPTIONS:
     🔒 --safe                   read only mode, may be given anywhere on the
-                               line. Refuses import and sql --write, so no
-                               database file is ever opened for writing.
+                               line. Refuses import, sql --write and
+                               sql-pipe --write, so no database file is ever
+                               opened for writing.
 
 Dumping never writes to, locks, or moves the source database.
 Importing never writes to the dump it reads.
@@ -62,6 +68,11 @@ pub enum Command {
         write: bool,
         safe: bool,
     },
+    Pipe {
+        database: PathBuf,
+        statement: Option<String>,
+        write: bool,
+    },
     Dictionary {
         database: PathBuf,
     },
@@ -70,6 +81,11 @@ pub enum Command {
 }
 
 pub fn parse<I: IntoIterator<Item = String>>(arguments: I) -> Result<Command, DumpError> {
+    let arguments: Vec<String> = arguments.into_iter().collect();
+    if let Some(position) = arguments.iter().position(|argument| argument == "sql-pipe") {
+        return pipe(&arguments[..position], &arguments[position + 1..]);
+    }
+
     let mut safe = false;
     let mut given: Vec<String> = Vec::new();
     for argument in arguments {
@@ -143,6 +159,51 @@ fn sql<I: Iterator<Item = String>>(arguments: I, safe: bool) -> Result<Command, 
         database: resolve(options.value.as_deref())?,
         write: options.write,
         safe,
+    })
+}
+
+fn pipe(head: &[String], tail: &[String]) -> Result<Command, DumpError> {
+    let mut safe = head.iter().any(|argument| argument == "--safe");
+    if let Some(unexpected) = head.iter().find(|argument| *argument != "--safe") {
+        return Err(DumpError::Usage(format!(
+            "unexpected argument before sql-pipe: {unexpected}"
+        )));
+    }
+
+    let mut write = false;
+    let mut rest = tail.iter();
+    let mut database = None;
+
+    for argument in rest.by_ref() {
+        match argument.as_str() {
+            "--safe" => safe = true,
+            "--write" => write = true,
+            flag if flag.starts_with('-') => {
+                return Err(DumpError::Usage(format!("unknown option: {flag}")));
+            }
+            value => {
+                database = Some(PathBuf::from(value));
+                break;
+            }
+        }
+    }
+
+    if safe && write {
+        return Err(DumpError::Blocked(
+            "sql-pipe --write opens the database for writing, so it cannot run".to_string(),
+        ));
+    }
+    let database =
+        database.ok_or_else(|| DumpError::Usage("sql-pipe needs a database".to_string()))?;
+    if !database.is_file() {
+        return Err(DumpError::MissingDatabase(database));
+    }
+
+    let words: Vec<&str> = rest.map(String::as_str).collect();
+    Ok(Command::Pipe {
+        database,
+        statement: (!words.is_empty()).then(|| words.join(" ")),
+        write,
     })
 }
 

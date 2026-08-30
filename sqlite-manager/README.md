@@ -1,6 +1,6 @@
 <img src="images/logo.svg" alt="sqlite-manager" width="420">
 
-A Rust CLI that backs up, restores, verifies, queries and documents SQLite databases. It reads a `.db` file and writes a `schema.sql`, a `data.sql` and a `manifest.txt` that together rebuild the database exactly, restores that dump into a fresh database, tells you whether a dump is still sound, opens a SQL shell over a database, and prints a data dictionary of everything in it.
+A Rust CLI that backs up, restores, verifies, queries and documents SQLite databases. It reads a `.db` file and writes a `schema.sql`, a `data.sql` and a `manifest.txt` that together rebuild the database exactly, restores that dump into a fresh database, tells you whether a dump is still sound, opens a SQL shell over a database, runs one-off SQL straight from the command line or a pipe, and prints a data dictionary of everything in it.
 
 The source database is never written to, locked, or moved.
 
@@ -26,7 +26,8 @@ The database header travels with the schema. `user_version` and `application_id`
 - **`import`** — rebuilds a database from a dump directory. Refuses to overwrite an existing file unless `--force` is passed, so a restore can never silently destroy a database.
 - **`check`** — replays a dump into a scratch database, runs integrity and foreign key checks, and compares every table against `manifest.txt`. A backup you have never restored is not a backup, and a backup that restores one row short is worse than one that fails outright.
 - **`sql`** — an interactive shell with SQL syntax highlighting, line numbers, tab completion over keywords, tables and columns, multi-line statements and box-drawn result tables. Read only unless `--write` is passed.
-- **`tables;`, `desc table NAME;`, `help;`** — shell commands that read like SQL rather than dot commands, so the shell answers "what is in here" without leaving it.
+- **`sql-pipe`** — the same engine without the shell: one statement, or a whole `.sql` file on stdin, printed and gone. Read only unless `--write` is passed, and a failing statement exits non-zero so a pipeline notices.
+- **`tables;`, `desc table NAME;`, `help;`** — commands that read like SQL rather than dot commands, so the shell answers "what is in here" without leaving it. `sql-pipe` understands the same ones.
 - **`dict`** — the data dictionary: every table with its columns, types, constraints, indexes, views, triggers and the full relation graph. Answers "what is in this database" in one screen.
 - **`--safe`** — read only mode. It refuses `import` and `sql --write`, so no database file is ever opened for writing. It may be given anywhere on the line.
 - **Never touches the source** — read only and immutable by default, private copy when a log is hot, and a guard that refuses to write output over the database being read.
@@ -52,11 +53,12 @@ dump   [PATH] [-o DIR]     read a database and write schema.sql, data.sql, manif
 import <DIR> [-o FILE]     rebuild a database from a dump directory (--force to overwrite)
 check  <DIR>               rebuild a dump in a scratch database, verify it against manifest.txt
 sql    [PATH] [--write]    SQL shell with highlighting, line numbers, completion, tables
+sql-pipe <PATH> [SQL]      run SQL once and print the result, no shell (--write before PATH)
 dict   [PATH]              print the data dictionary
 help                       print the help
 version                    print the version
 
---safe                     read only, refuses import and sql --write
+--safe                     read only, refuses import, sql --write and sql-pipe --write
 ```
 
 `PATH` may be a database file or a directory to search; it defaults to the current directory. Running with no arguments prints the help.
@@ -73,7 +75,57 @@ $ sqlite-manager --safe sql sample/dbs/store.db --write
 ❌ sqlite-manager: 🔒 --safe is on, sql --write opens the database for writing, so it cannot run
 ```
 
-`dump`, `check` and `dict` never write a database, so they run unchanged under `--safe`.
+```bash
+$ sqlite-manager --safe sql-pipe --write sample/dbs/store.db "delete from orders"
+❌ sqlite-manager: 🔒 --safe is on, sql-pipe --write opens the database for writing, so it cannot run
+```
+
+`dump`, `check`, `dict` and a plain `sql-pipe` never write a database, so they run unchanged under `--safe`.
+
+## sql-pipe
+
+`sql` is for exploring, `sql-pipe` is for scripting. It opens the database, runs what it is given, prints the result and exits.
+
+The statement is the rest of the line:
+
+```bash
+$ sqlite-manager sql-pipe sample/dbs/store.db "select id, name from customers limit 3"
+┌────┬─────────────┐
+│ id │ name        │
+├────┼─────────────┤
+│ 1  │ Ana Ribeiro │
+│ 2  │ Lars Holm   │
+│ 3  │ Mei Tanaka  │
+└────┴─────────────┘
+3 rows
+```
+
+Quoting is optional; every word after the database path is joined back together, so this is the same query:
+
+```bash
+sqlite-manager sql-pipe sample/dbs/store.db select id, name from customers limit 3
+```
+
+Nothing after the database path is read as an option, so `where id > -1` is SQL rather than a bad flag. `--write` and `--safe` go before the path. The one thing the shell does behind your back is glob `*`, so quote a `select *` unless the current directory is empty.
+
+When the rest of the line is empty the statement is read from stdin, which is where the name comes from:
+
+```bash
+echo "select count(*) as products from products" | sqlite-manager sql-pipe sample/dbs/store.db
+sqlite-manager sql-pipe sample/dbs/store.db < report.sql
+```
+
+A file may hold several statements, on one line or many; they are split with SQLite's own parser and each result is printed in turn. `tables;`, `desc table NAME;` and `help;` work here as well as in the shell. A statement that fails prints to stderr and exits non-zero, so `set -e` and `&&` behave, and the statements after it do not run.
+
+Writes need `--write`, before the path:
+
+```bash
+$ sqlite-manager sql-pipe sample/dbs/store.db "delete from orders"
+❌ sqlite-manager: delete from orders: attempt to write a readonly database
+
+$ sqlite-manager sql-pipe --write sample/dbs/store.db "delete from orders where id = 6"
+1 row changed
+```
 
 ## Sample databases
 
@@ -89,6 +141,7 @@ $ sqlite-manager --safe sql sample/dbs/store.db --write
 sqlite-manager dict sample/dbs/store.db
 sqlite-manager --safe sql sample/dbs/library.db
 sqlite-manager dump sample/dbs/metrics.db -o backup
+sqlite-manager sql-pipe sample/dbs/metrics.db "select metric, count(*) from samples group by metric"
 ```
 
 Each one is built from the `.sql` file beside it, so `sample/dbs/build.sh` recreates all three from scratch.
@@ -117,13 +170,14 @@ The app in `sample/` is a plain REST service on `http://localhost:7777`.
 - **Triggers are guarded in `data.sql`**, not reordered in `schema.sql`. `schema.sql` stays a complete, readable description of the schema, and the data file stays safe to replay on its own.
 - **`PRAGMA table_list` classifies tables** so FTS shadow tables are excluded from both the schema and the data, while the virtual table itself is dumped and rebuilt normally.
 - **Column lists are explicit** in every `INSERT`. Generated columns cannot be inserted into, and an explicit list keeps a dump valid if the schema later gains a column.
+- **`sql-pipe` stops parsing options at the database path.** SQL is full of tokens that look like flags — `-1`, `--` comments — and no escape hatch is needed if the parser simply knows the argument list is over.
 - **Errors carry a file and line**, so a bad dump reports `data.sql:4: near "INSRT": syntax error` rather than a bare failure.
 
 ## How to run
 
 ```bash
 ./build.sh          # fmt check, clippy with warnings denied, release build
-./test.sh           # 17 unit tests and 12 end-to-end tests
+./test.sh           # 17 unit tests and 17 end-to-end tests
 ./install.sh        # builds and installs to /usr/local/bin (BIN_DIR= to override)
 ./uninstall.sh      # removes it again
 ./run.sh dump ./my.db -o backup

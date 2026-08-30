@@ -17,6 +17,7 @@ pub enum DumpError {
         message: String,
     },
     Unsound(Vec<String>),
+    Query(String, rusqlite::Error),
     Io(String, std::io::Error),
     Sqlite(rusqlite::Error),
     Shell(rustyline::error::ReadlineError),
@@ -71,6 +72,13 @@ impl fmt::Display for DumpError {
             }
             DumpError::Unsound(problems) => {
                 write!(formatter, "the dump is not sound: {}", problems.join("; "))
+            }
+            DumpError::Query(statement, source) => {
+                let message = source.to_string();
+                match message.contains(statement.trim()) {
+                    true => write!(formatter, "{message}"),
+                    false => write!(formatter, "{statement}: {message}"),
+                }
             }
             DumpError::Io(context, source) => write!(formatter, "{context}: {source}"),
             DumpError::Sqlite(source) => write!(formatter, "sqlite: {source}"),

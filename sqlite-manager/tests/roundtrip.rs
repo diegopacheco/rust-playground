@@ -35,7 +35,7 @@ fn run(arguments: &[&str]) -> Output {
     Command::new(BINARY).args(arguments).output().unwrap()
 }
 
-fn run_shell(arguments: &[&str], input: &str) -> String {
+fn run_stdin(arguments: &[&str], input: &str) -> Output {
     use std::io::Write;
     use std::process::Stdio;
 
@@ -52,8 +52,11 @@ fn run_shell(arguments: &[&str], input: &str) -> String {
         .unwrap()
         .write_all(input.as_bytes())
         .unwrap();
-    let output = child.wait_with_output().unwrap();
-    String::from_utf8_lossy(&output.stdout).to_string()
+    child.wait_with_output().unwrap()
+}
+
+fn run_shell(arguments: &[&str], input: &str) -> String {
+    String::from_utf8_lossy(&run_stdin(arguments, input).stdout).to_string()
 }
 
 fn fingerprint(path: &Path) -> Vec<u8> {
@@ -401,6 +404,18 @@ fn safe_mode_refuses_every_command_that_would_write_a_database() {
         "safe mode opened the database for writing"
     );
 
+    let blocked = run(&[
+        "--safe",
+        "sql-pipe",
+        "--write",
+        source.to_str().unwrap(),
+        "DELETE FROM author",
+    ]);
+    assert!(
+        !blocked.status.success(),
+        "safe mode let sql-pipe open the database for writing"
+    );
+
     assert_eq!(
         before,
         fingerprint(&source),
@@ -613,5 +628,204 @@ fn a_dump_taken_before_manifests_still_checks() {
         .status
         .success(),
         "an older dump should still import"
+    );
+}
+
+#[test]
+fn sql_pipe_reads_the_statement_from_the_line_or_from_stdin() {
+    let sandbox = Sandbox::new("pipe-input");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+    let path = source.to_str().unwrap();
+
+    let from_line = run(&["sql-pipe", path, "SELECT name FROM author ORDER BY id"]);
+    assert!(from_line.status.success());
+    let from_line = String::from_utf8_lossy(&from_line.stdout).to_string();
+
+    let from_stdin = run_stdin(
+        &["sql-pipe", path],
+        "SELECT name FROM author ORDER BY id;\n",
+    );
+    assert!(from_stdin.status.success());
+    let from_stdin = String::from_utf8_lossy(&from_stdin.stdout).to_string();
+
+    assert!(from_line.contains("Zoë ünïcode"), "{from_line}");
+    assert_eq!(
+        from_line, from_stdin,
+        "the two ways of handing sql-pipe a statement must answer the same thing"
+    );
+
+    let words = run(&["sql-pipe", path, "SELECT", "name", "FROM", "author"]);
+    assert!(
+        String::from_utf8_lossy(&words.stdout).contains("Ana"),
+        "an unquoted statement is the rest of the line, joined back together"
+    );
+}
+
+#[test]
+fn sql_pipe_treats_everything_after_the_database_as_sql() {
+    let sandbox = Sandbox::new("pipe-flags");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+
+    let output = run(&[
+        "sql-pipe",
+        source.to_str().unwrap(),
+        "SELECT id FROM author WHERE id > -1 ORDER BY id",
+    ]);
+    assert!(
+        output.status.success(),
+        "a negative number in the SQL was read as an option: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+
+    let output = run(&["sql-pipe", "--bogus", source.to_str().unwrap(), "SELECT 1"]);
+    assert!(
+        !output.status.success(),
+        "an unknown option before the database should still fail"
+    );
+}
+
+#[test]
+fn sql_pipe_runs_every_statement_it_is_given() {
+    let sandbox = Sandbox::new("pipe-many");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+
+    let output = run_stdin(
+        &["sql-pipe", source.to_str().unwrap()],
+        "SELECT count(*) AS authors FROM author;\n\nSELECT count(*) AS orders FROM \"order\";\n",
+    );
+    assert!(output.status.success());
+    let text = String::from_utf8_lossy(&output.stdout);
+    assert!(text.contains("authors"), "{text}");
+    assert!(text.contains("orders"), "{text}");
+}
+
+#[test]
+fn sql_pipe_is_read_only_until_write_is_asked_for() {
+    let sandbox = Sandbox::new("pipe-write");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+    let path = source.to_str().unwrap();
+    let before = fingerprint(&source);
+
+    let refused = run(&["sql-pipe", path, "INSERT INTO author(name) VALUES ('Kim')"]);
+    assert!(!refused.status.success());
+    assert_eq!(
+        before,
+        fingerprint(&source),
+        "sql-pipe wrote to the database without --write"
+    );
+
+    let allowed = run(&[
+        "sql-pipe",
+        "--write",
+        path,
+        "INSERT INTO author(name) VALUES ('Kim')",
+    ]);
+    assert!(
+        allowed.status.success(),
+        "{}",
+        String::from_utf8_lossy(&allowed.stderr)
+    );
+    assert_eq!(
+        scalar(&source, "SELECT CAST(count(*) AS TEXT) FROM author"),
+        "4"
+    );
+}
+
+#[test]
+fn sql_pipe_stops_and_fails_when_a_statement_is_wrong() {
+    let sandbox = Sandbox::new("pipe-error");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+    let path = source.to_str().unwrap();
+
+    let broken = run(&["sql-pipe", path, "SELECT nope FROM author"]);
+    assert!(
+        !broken.status.success(),
+        "a failing query must exit non-zero so a pipeline notices"
+    );
+    assert!(String::from_utf8_lossy(&broken.stderr).contains("no such column"));
+
+    let unterminated = run_stdin(&["sql-pipe", path], "SELECT 'oops");
+    assert!(!unterminated.status.success());
+    assert!(
+        String::from_utf8_lossy(&unterminated.stderr).contains("unterminated"),
+        "a half written statement must be reported, not quietly dropped"
+    );
+
+    let nothing = run_stdin(&["sql-pipe", path], "");
+    assert!(!nothing.status.success());
+    assert!(String::from_utf8_lossy(&nothing.stderr).contains("needs a statement"));
+}
+
+#[test]
+fn sql_pipe_answers_the_shell_commands_too() {
+    let sandbox = Sandbox::new("pipe-commands");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+    let path = source.to_str().unwrap();
+
+    let listed = run(&["sql-pipe", path, "tables;"]);
+    assert!(
+        listed.status.success(),
+        "sql-pipe handed tables; to SQLite as SQL: {}",
+        String::from_utf8_lossy(&listed.stderr)
+    );
+    let text = String::from_utf8_lossy(&listed.stdout);
+    assert!(text.contains("author"), "{text}");
+
+    let described = run(&["sql-pipe", path, "desc table \"order\";"]);
+    assert!(described.status.success());
+    assert!(
+        String::from_utf8_lossy(&described.stdout).contains("author_id"),
+        "desc table did not list the columns"
+    );
+
+    let missing = run(&["sql-pipe", path, "desc table nope;"]);
+    assert!(
+        !missing.status.success(),
+        "a command that failed must exit non-zero so a pipeline notices"
+    );
+}
+
+#[test]
+fn several_statements_on_one_line_each_run() {
+    let sandbox = Sandbox::new("pipe-one-line");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+
+    let output = run(&[
+        "sql-pipe",
+        source.to_str().unwrap(),
+        "SELECT count(*) AS authors FROM author; SELECT 'a;b' AS quoted;",
+    ]);
+    assert!(
+        output.status.success(),
+        "statements are split by SQL, not by line: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    let text = String::from_utf8_lossy(&output.stdout);
+    assert!(text.contains("authors"), "{text}");
+    assert!(
+        text.contains("a;b"),
+        "a semicolon inside a string is not a statement boundary: {text}"
+    );
+}
+
+#[test]
+fn a_failing_statement_is_reported_once() {
+    let sandbox = Sandbox::new("pipe-message");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+
+    let broken = run(&["sql-pipe", source.to_str().unwrap(), "SELECT nope;"]);
+    let message = String::from_utf8_lossy(&broken.stderr);
+    assert_eq!(
+        message.matches("SELECT nope").count(),
+        1,
+        "the statement is printed twice: {message}"
     );
 }

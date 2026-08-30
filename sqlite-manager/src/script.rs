@@ -88,6 +88,36 @@ fn leading_word(statement: &str) -> String {
         .to_lowercase()
 }
 
+pub fn split(text: &str) -> Result<Vec<String>, DumpError> {
+    let mut statements = Vec::new();
+    let mut pending = String::new();
+
+    for character in text.chars() {
+        if pending.is_empty() && character.is_whitespace() {
+            continue;
+        }
+        pending.push(character);
+
+        if character != ';' || !is_complete(&pending) {
+            continue;
+        }
+        statements.push(pending.trim().to_string());
+        pending.clear();
+    }
+
+    let trailing = pending.trim();
+    if trailing.is_empty() {
+        return Ok(statements);
+    }
+    if is_complete(&format!("{trailing};")) {
+        statements.push(trailing.to_string());
+        return Ok(statements);
+    }
+    Err(DumpError::Usage(format!(
+        "unterminated SQL statement: {trailing}"
+    )))
+}
+
 pub fn is_complete(text: &str) -> bool {
     let Ok(probe) = CString::new(text) else {
         return false;
