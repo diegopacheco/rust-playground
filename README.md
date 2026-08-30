@@ -2,6 +2,15 @@
 
 rust-playground is a set of rust useful code and poc.
 
+## Actor/Agent Frameworks
+
+See [AGENT_PROJECTS.md](AGENT_PROJECTS.md) for a comprehensive guide to the agent/actor projects in this repository.
+
+* https://github.com/diegopacheco/rust-playground/tree/master/ractor-fun - Ractor (modern async actors)
+* https://github.com/diegopacheco/rust-playground/tree/master/riker-fun - Riker (Akka-inspired)
+* https://github.com/diegopacheco/rust-playground/tree/master/xactor_fun - xActor (lightweight async)
+* https://github.com/diegopacheco/rust-playground/tree/master/bastion-fun - Bastion (fault-tolerant)
+
 ## Microservice
 
 * https://github.com/diegopacheco/rust-playground/tree/master/rust-microservice
