@@ -35,6 +35,27 @@ fn run(arguments: &[&str]) -> Output {
     Command::new(BINARY).args(arguments).output().unwrap()
 }
 
+fn run_shell(arguments: &[&str], input: &str) -> String {
+    use std::io::Write;
+    use std::process::Stdio;
+
+    let mut child = Command::new(BINARY)
+        .args(arguments)
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    child
+        .stdin
+        .take()
+        .unwrap()
+        .write_all(input.as_bytes())
+        .unwrap();
+    let output = child.wait_with_output().unwrap();
+    String::from_utf8_lossy(&output.stdout).to_string()
+}
+
 fn fingerprint(path: &Path) -> Vec<u8> {
     std::fs::read(path).unwrap()
 }
@@ -384,5 +405,46 @@ fn safe_mode_refuses_every_command_that_would_write_a_database() {
         before,
         fingerprint(&source),
         "safe mode modified the source database"
+    );
+}
+
+#[test]
+fn the_shell_commands_are_not_handed_to_sqlite_as_sql() {
+    let sandbox = Sandbox::new("shell");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+
+    let output = run_shell(
+        &["sql", source.to_str().unwrap()],
+        "tables;\ndesc table \"order\";\nhelp;\nquit;\n",
+    );
+
+    assert!(output.contains("author"), "tables; listed no tables");
+    assert!(output.contains("big"), "tables; left out the views");
+
+    assert!(
+        output.contains("author_id"),
+        "desc table did not list the columns"
+    );
+    assert!(
+        output.contains("references author_id -> author.id"),
+        "desc table did not list the foreign keys"
+    );
+    assert!(
+        output.contains("idx_order_author"),
+        "desc table did not list the indexes"
+    );
+    assert!(
+        output.contains("GENERATED ALWAYS"),
+        "desc table did not print the full CREATE statement"
+    );
+
+    assert!(
+        output.contains("desc table NAME"),
+        "help; listed no commands"
+    );
+    assert!(
+        !output.contains("syntax error"),
+        "a command was executed as SQL: {output}"
     );
 }

@@ -2,6 +2,7 @@ mod check;
 mod cli;
 mod data;
 mod db;
+mod describe;
 mod dictionary;
 mod dump;
 mod dumpfiles;

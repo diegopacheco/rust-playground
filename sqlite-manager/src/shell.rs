@@ -30,7 +30,7 @@ pub fn run(database: &Path, writable: bool, safe: bool) -> Result<(), DumpError>
         "🐚 {BOLD}sqlite-manager sql{RESET}  {}  ({mode})",
         path.display()
     );
-    println!("{DIM}.help lists the shell commands, .quit leaves{RESET}\n");
+    println!("{DIM}help; lists the shell commands, quit; leaves{RESET}\n");
 
     let helper = SqlHelper {
         vocabulary: RefCell::new(Vec::new()),
@@ -98,18 +98,45 @@ fn open(path: &Path, writable: bool) -> Result<Connection, DumpError> {
     }
 }
 
+fn is_command(line: &str) -> bool {
+    let head = line
+        .trim()
+        .trim_end_matches(';')
+        .split_whitespace()
+        .next()
+        .unwrap_or_default()
+        .to_lowercase();
+    head.starts_with('.')
+        || matches!(
+            head.as_str(),
+            "tables" | "desc" | "describe" | "help" | "quit" | "exit"
+        )
+}
+
 fn handle_command(line: &str, connection: &Connection) -> Result<bool, DumpError> {
-    if !line.starts_with('.') {
+    if !is_command(line) {
         return Ok(false);
     }
-    let mut parts = line.split_whitespace();
-    let command = parts.next().unwrap_or_default();
-    let argument = parts.next();
+    let body = line.trim().trim_end_matches(';').trim();
+    let (command, rest) = match body.split_once(char::is_whitespace) {
+        Some((head, tail)) => (head.to_lowercase(), tail.trim()),
+        None => (body.to_lowercase(), ""),
+    };
+    if command == "desc" || command == "describe" {
+        let name = match rest.split_once(char::is_whitespace) {
+            Some((head, tail)) if head.eq_ignore_ascii_case("table") => tail.trim(),
+            _ if rest.eq_ignore_ascii_case("table") => "",
+            _ => rest,
+        };
+        describe_table(connection, unquote(name));
+        return Ok(true);
+    }
+    let argument = rest.split_whitespace().next();
 
-    match command {
-        ".quit" | ".exit" => std::process::exit(0),
-        ".help" => println!("{}", HELP),
-        ".tables" => execute(connection, TABLES),
+    match command.as_str() {
+        ".quit" | ".exit" | "quit" | "exit" => std::process::exit(0),
+        ".help" | "help" => println!("{}", HELP),
+        ".tables" | "tables" => execute(connection, TABLES),
         ".schema" => match argument {
             Some(name) => {
                 let query = format!(
@@ -120,9 +147,55 @@ fn handle_command(line: &str, connection: &Connection) -> Result<bool, DumpError
             }
             None => execute(connection, "SELECT type, name, sql FROM sqlite_master"),
         },
-        other => println!("❓ unknown shell command: {other}, try .help"),
+        other => println!("❓ unknown shell command: {other}, try help;"),
     }
     Ok(true)
+}
+
+fn unquote(name: &str) -> String {
+    let name = name.trim();
+    let unwrapped = match name.chars().next() {
+        Some('"') => name.strip_prefix('"').and_then(|n| n.strip_suffix('"')),
+        Some('\'') => name.strip_prefix('\'').and_then(|n| n.strip_suffix('\'')),
+        Some('`') => name.strip_prefix('`').and_then(|n| n.strip_suffix('`')),
+        Some('[') => name.strip_prefix('[').and_then(|n| n.strip_suffix(']')),
+        _ => None,
+    };
+    match unwrapped {
+        Some(inner) => inner.replace("\"\"", "\""),
+        None => name.to_string(),
+    }
+}
+
+fn describe_table(connection: &Connection, name: String) {
+    if name.is_empty() {
+        println!("❓ desc needs a table name, try: desc table NAME;\n");
+        return;
+    }
+    let name = name.as_str();
+    let described = crate::describe::rows(connection, name)
+        .and_then(|rows| crate::describe::table(connection, name, rows));
+    match described {
+        Ok(_) => match statements(connection, name) {
+            Ok(found) => {
+                for statement in found {
+                    println!("\n{}", highlight::paint(statement.trim()));
+                }
+                println!();
+            }
+            Err(failure) => println!("{RED}❌ error{RESET} {failure}\n"),
+        },
+        Err(failure) => println!("{RED}❌ error{RESET} {failure}\n"),
+    }
+}
+
+fn statements(connection: &Connection, table: &str) -> Result<Vec<String>, rusqlite::Error> {
+    let mut prepared = connection.prepare(
+        "SELECT sql FROM sqlite_master WHERE tbl_name = ?1 AND sql IS NOT NULL \
+         ORDER BY CASE type WHEN 'table' THEN 1 WHEN 'index' THEN 2 ELSE 3 END, name",
+    )?;
+    let found = prepared.query_map([table], |row| row.get::<_, String>(0))?;
+    found.collect()
 }
 
 fn execute(connection: &Connection, statement: &str) {
@@ -217,10 +290,14 @@ const TABLES: &str = "SELECT name, type FROM pragma_table_list \
                       AND name NOT LIKE 'sqlite\\_%' ESCAPE '\\' \
                       ORDER BY type, name";
 
-const HELP: &str = "  📋 .tables            list tables and views
-  🧱 .schema [TABLE]    show the SQL that defines the schema
-  ❓ .help              this list
-  👋 .quit              leave the shell
+const HELP: &str = "  📋 tables;               list every table and view
+  🔬 desc table NAME;      describe a table: columns, indexes, keys and SQL
+  🧱 .schema [TABLE]       show the raw SQL that defines the schema
+  ❓ help;                 this list
+  👋 quit;                 leave the shell
+
+  Each command also works dot-prefixed and without the semicolon,
+  so tables; .tables and tables are the same thing.
 
   Statements run when they are complete, so a statement can span
   several lines. Tab completes keywords, tables and columns.
@@ -286,7 +363,7 @@ impl Highlighter for SqlHelper {
 impl Validator for SqlHelper {
     fn validate(&self, context: &mut ValidationContext<'_>) -> rustyline::Result<ValidationResult> {
         let input = context.input().trim();
-        if input.is_empty() || input.starts_with('.') || script::is_complete(context.input()) {
+        if input.is_empty() || is_command(input) || script::is_complete(context.input()) {
             return Ok(ValidationResult::Valid(None));
         }
         Ok(ValidationResult::Incomplete)

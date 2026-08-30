@@ -22,6 +22,7 @@ Schema objects come out of `sqlite_master` in dependency order. Row data is stre
 - **`import`** — rebuilds a database from a dump directory. Refuses to overwrite an existing file unless `--force` is passed, so a restore can never silently destroy a database.
 - **`check`** — replays a dump into a scratch database and runs integrity and foreign key checks. A backup you have never restored is not a backup.
 - **`sql`** — an interactive shell with SQL syntax highlighting, line numbers, tab completion over keywords, tables and columns, multi-line statements and box-drawn result tables. Read only unless `--write` is passed.
+- **`tables;`, `desc table NAME;`, `help;`** — shell commands that read like SQL rather than dot commands, so the shell answers "what is in here" without leaving it.
 - **`dict`** — the data dictionary: every table with its columns, types, constraints, indexes, views, triggers and the full relation graph. Answers "what is in this database" in one screen.
 - **`--safe`** — read only mode. It refuses `import` and `sql --write`, so no database file is ever opened for writing. It may be given anywhere on the line.
 - **Never touches the source** — read only and immutable by default, private copy when a log is hot, and a guard that refuses to write output over the database being read.
@@ -116,7 +117,7 @@ The app in `sample/` is a plain REST service on `http://localhost:7777`.
 
 ```bash
 ./build.sh          # fmt check, clippy with warnings denied, release build
-./test.sh           # 14 unit tests and 7 end-to-end tests
+./test.sh           # 14 unit tests and 8 end-to-end tests
 ./install.sh        # builds and installs to /usr/local/bin (BIN_DIR= to override)
 ./uninstall.sh      # removes it again
 ./run.sh dump ./my.db -o backup
@@ -181,11 +182,42 @@ RELATIONS
   notes.author_id -> authors.id  on delete cascade
 ```
 
-`sql` opens the shell. Keywords colour as you type, the prompt counts lines, Tab completes, and results come back as tables:
+`sql` opens the shell. Keywords colour as you type, the prompt counts lines, Tab completes, and results come back as tables. Alongside SQL it takes three commands, written with a semicolon like everything else:
+
+| Command | Does |
+| --- | --- |
+| `tables;` | list every table and view |
+| `desc table NAME;` | describe one table: columns, indexes, foreign keys and the full `CREATE` statement |
+| `help;` | list the commands |
+
+Each also works dot-prefixed and without the semicolon, so `tables;`, `.tables` and `tables` are the same thing. `desc` takes a view as happily as a table, and quoted names (`desc table "order";`) are unwrapped before the lookup.
+
+```
+   1 sql> desc table orders;
+🧱 TABLE orders  (6 rows)
+  id           INTEGER  primary key
+  customer_id  INTEGER  not null
+  placed_at    TEXT     not null
+  status       TEXT     not null
+  index idx_orders_status (status)
+  index idx_orders_customer (customer_id)
+  references customer_id -> customers.id
+
+CREATE TABLE orders (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  customer_id INTEGER NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+  placed_at   TEXT NOT NULL,
+  status      TEXT NOT NULL
+)
+
+CREATE INDEX idx_orders_customer ON orders(customer_id)
+```
+
+Ordinary queries come back as tables:
 
 ```
 🐚 sqlite-manager sql sample/sample.db  (👀 read only)
-.help lists the shell commands, .quit leaves
+help; lists the shell commands, quit; leaves
 
    1 sql> SELECT a.name, count(*) AS notes
    2 ...> FROM notes n JOIN authors a ON a.id = n.author_id

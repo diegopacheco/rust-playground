@@ -175,75 +175,8 @@ impl Source {
         Ok(())
     }
 
-    pub fn columns(&self, table: &str) -> Result<Vec<Column>, DumpError> {
-        let mut statement = self
-            .connection
-            .prepare(&format!("PRAGMA table_info({})", sql::quote_ident(table)))?;
-        let mut rows = statement.query([])?;
-        let mut columns = Vec::new();
-        while let Some(row) = rows.next()? {
-            columns.push(Column {
-                name: row.get(1)?,
-                kind: row.get(2)?,
-                required: row.get::<_, i64>(3)? != 0,
-                default: row.get(4)?,
-                key: row.get::<_, i64>(5)? != 0,
-            });
-        }
-        Ok(columns)
-    }
-
-    pub fn relations(&self, table: &str) -> Result<Vec<Relation>, DumpError> {
-        let mut statement = self.connection.prepare(&format!(
-            "PRAGMA foreign_key_list({})",
-            sql::quote_ident(table)
-        ))?;
-        let mut rows = statement.query([])?;
-        let mut relations = Vec::new();
-        while let Some(row) = rows.next()? {
-            let target_table: String = row.get(2)?;
-            let column: String = row.get(3)?;
-            let target_column: Option<String> = row.get(4)?;
-            relations.push(Relation {
-                table: table.to_string(),
-                target_column: target_column.unwrap_or_else(|| "rowid".to_string()),
-                column,
-                target_table,
-                on_delete: row.get(6)?,
-            });
-        }
-        Ok(relations)
-    }
-
-    pub fn indexes(&self, table: &str) -> Result<Vec<Index>, DumpError> {
-        let mut statement = self
-            .connection
-            .prepare(&format!("PRAGMA index_list({})", sql::quote_ident(table)))?;
-        let mut rows = statement.query([])?;
-        let mut listed = Vec::new();
-        while let Some(row) = rows.next()? {
-            listed.push((row.get::<_, String>(1)?, row.get::<_, i64>(2)? != 0));
-        }
-
-        let mut indexes = Vec::new();
-        for (name, unique) in listed {
-            let mut statement = self
-                .connection
-                .prepare(&format!("PRAGMA index_info({})", sql::quote_ident(&name)))?;
-            let mut rows = statement.query([])?;
-            let mut columns = Vec::new();
-            while let Some(row) = rows.next()? {
-                if let Some(column) = row.get::<_, Option<String>>(2)? {
-                    columns.push(column);
-                }
-            }
-            indexes.push(Index {
-                name,
-                unique,
-                columns,
-            });
-        }
-        Ok(indexes)
+    pub fn connection(&self) -> &Connection {
+        &self.connection
     }
 
     fn describe(&self, name: &str) -> Result<Table, DumpError> {
@@ -291,6 +224,74 @@ impl Source {
             .map(|entry| entry.name)
             .collect())
     }
+}
+
+pub fn columns(connection: &Connection, table: &str) -> Result<Vec<Column>, DumpError> {
+    let mut statement =
+        connection.prepare(&format!("PRAGMA table_info({})", sql::quote_ident(table)))?;
+    let mut rows = statement.query([])?;
+    let mut columns = Vec::new();
+    while let Some(row) = rows.next()? {
+        columns.push(Column {
+            name: row.get(1)?,
+            kind: row.get(2)?,
+            required: row.get::<_, i64>(3)? != 0,
+            default: row.get(4)?,
+            key: row.get::<_, i64>(5)? != 0,
+        });
+    }
+    Ok(columns)
+}
+
+pub fn relations(connection: &Connection, table: &str) -> Result<Vec<Relation>, DumpError> {
+    let mut statement = connection.prepare(&format!(
+        "PRAGMA foreign_key_list({})",
+        sql::quote_ident(table)
+    ))?;
+    let mut rows = statement.query([])?;
+    let mut relations = Vec::new();
+    while let Some(row) = rows.next()? {
+        let target_table: String = row.get(2)?;
+        let column: String = row.get(3)?;
+        let target_column: Option<String> = row.get(4)?;
+        relations.push(Relation {
+            table: table.to_string(),
+            target_column: target_column.unwrap_or_else(|| "rowid".to_string()),
+            column,
+            target_table,
+            on_delete: row.get(6)?,
+        });
+    }
+    Ok(relations)
+}
+
+pub fn indexes(connection: &Connection, table: &str) -> Result<Vec<Index>, DumpError> {
+    let mut statement =
+        connection.prepare(&format!("PRAGMA index_list({})", sql::quote_ident(table)))?;
+    let mut rows = statement.query([])?;
+    let mut listed = Vec::new();
+    while let Some(row) = rows.next()? {
+        listed.push((row.get::<_, String>(1)?, row.get::<_, i64>(2)? != 0));
+    }
+
+    let mut indexes = Vec::new();
+    for (name, unique) in listed {
+        let mut statement =
+            connection.prepare(&format!("PRAGMA index_info({})", sql::quote_ident(&name)))?;
+        let mut rows = statement.query([])?;
+        let mut columns = Vec::new();
+        while let Some(row) = rows.next()? {
+            if let Some(column) = row.get::<_, Option<String>>(2)? {
+                columns.push(column);
+            }
+        }
+        indexes.push(Index {
+            name,
+            unique,
+            columns,
+        });
+    }
+    Ok(indexes)
 }
 
 pub const SEQUENCE: &str = "sqlite_sequence";
