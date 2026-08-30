@@ -4,6 +4,7 @@ use rusqlite::Connection;
 
 use crate::dumpfiles::DumpFiles;
 use crate::error::DumpError;
+use crate::manifest::Manifest;
 use crate::progress::Progress;
 use crate::report;
 use crate::script;
@@ -31,6 +32,15 @@ pub fn run(source: &Path) -> Result<(), DumpError> {
         problems.push(report::count(orphans, "broken reference"));
     }
 
+    let counted = match &files.manifest {
+        Some(path) => {
+            let manifest = Manifest::read(path)?;
+            problems.extend(manifest.disagreements(&connection, schema.creates));
+            Some(manifest.tables.len())
+        }
+        None => None,
+    };
+
     progress.note("");
     progress.note(&format!(
         "🧱 schema.sql  {:>9}  {}",
@@ -42,6 +52,17 @@ pub fn run(source: &Path) -> Result<(), DumpError> {
         report::size(&files.data),
         report::count(data.inserts as usize, "row")
     ));
+    match counted {
+        Some(tables) => progress.note(&format!(
+            "🧮 manifest.txt  {}  {}",
+            report::size(files.manifest.as_ref().expect("a manifest was read")),
+            report::count(tables, "counted table")
+        )),
+        None => progress.note(
+            "🧮 manifest.txt  absent, this dump predates them, so the row counts \
+             were not verified",
+        ),
+    }
 
     if problems.is_empty() {
         progress.note("");

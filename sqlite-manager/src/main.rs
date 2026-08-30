@@ -9,6 +9,7 @@ mod dumpfiles;
 mod error;
 mod highlight;
 mod import;
+mod manifest;
 mod progress;
 mod report;
 mod schema;

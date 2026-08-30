@@ -448,3 +448,170 @@ fn the_shell_commands_are_not_handed_to_sqlite_as_sql() {
         "a command was executed as SQL: {output}"
     );
 }
+
+#[test]
+fn the_header_pragmas_travel_with_the_dump() {
+    let sandbox = Sandbox::new("header");
+    let source = sandbox.path("stamped.db");
+    let connection = Connection::open(&source).unwrap();
+    connection
+        .execute_batch(
+            "CREATE TABLE t(a INTEGER);
+             INSERT INTO t(a) VALUES (1);
+             PRAGMA user_version=7;
+             PRAGMA application_id=999;",
+        )
+        .unwrap();
+    drop(connection);
+
+    let dump = sandbox.path("dump");
+    assert!(
+        run(&[
+            "dump",
+            source.to_str().unwrap(),
+            "-o",
+            dump.to_str().unwrap()
+        ])
+        .status
+        .success()
+    );
+
+    let restored = sandbox.path("restored.db");
+    assert!(
+        run(&[
+            "import",
+            dump.to_str().unwrap(),
+            "-o",
+            restored.to_str().unwrap()
+        ])
+        .status
+        .success()
+    );
+
+    for pragma in ["user_version", "application_id"] {
+        let query = format!("SELECT cast({pragma} AS TEXT) FROM pragma_{pragma}");
+        assert_eq!(
+            scalar(&source, &query),
+            scalar(&restored, &query),
+            "{pragma} was lost, so the restore is not the same database"
+        );
+    }
+}
+
+#[test]
+fn a_database_that_never_set_the_pragmas_keeps_a_clean_schema() {
+    let sandbox = Sandbox::new("unstamped");
+    let source = sandbox.path("plain.db");
+    let connection = Connection::open(&source).unwrap();
+    connection
+        .execute_batch("CREATE TABLE t(a INTEGER);")
+        .unwrap();
+    drop(connection);
+
+    let dump = sandbox.path("dump");
+    assert!(
+        run(&[
+            "dump",
+            source.to_str().unwrap(),
+            "-o",
+            dump.to_str().unwrap()
+        ])
+        .status
+        .success()
+    );
+
+    let schema = std::fs::read_to_string(dump.join("schema.sql")).unwrap();
+    assert!(
+        !schema.contains("user_version") && !schema.contains("application_id"),
+        "a database that set neither pragma should not carry them: {schema}"
+    );
+}
+
+#[test]
+fn check_catches_a_dump_that_quietly_lost_a_row() {
+    let sandbox = Sandbox::new("shortfall");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+
+    let dump = sandbox.path("dump");
+    assert!(
+        run(&[
+            "dump",
+            source.to_str().unwrap(),
+            "-o",
+            dump.to_str().unwrap()
+        ])
+        .status
+        .success()
+    );
+    assert!(run(&["check", dump.to_str().unwrap()]).status.success());
+
+    let data = dump.join("data.sql");
+    let sound = std::fs::read_to_string(&data).unwrap();
+    let kept: Vec<&str> = sound.lines().collect();
+    let victim = kept
+        .iter()
+        .position(|line| line.starts_with("INSERT INTO \"author\""))
+        .expect("the dump should insert an author");
+    let short: Vec<&str> = kept
+        .iter()
+        .enumerate()
+        .filter(|(index, _)| *index != victim)
+        .map(|(_, line)| *line)
+        .collect();
+    std::fs::write(&data, short.join("\n")).unwrap();
+
+    let output = run(&["check", dump.to_str().unwrap()]);
+    assert!(
+        !output.status.success(),
+        "a dump missing a row was called sound"
+    );
+    let complaint = String::from_utf8_lossy(&output.stderr);
+    assert!(
+        complaint.contains("author") && complaint.contains("manifest"),
+        "the failure should name the short table: {complaint}"
+    );
+}
+
+#[test]
+fn a_dump_taken_before_manifests_still_checks() {
+    let sandbox = Sandbox::new("legacy");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+
+    let dump = sandbox.path("dump");
+    assert!(
+        run(&[
+            "dump",
+            source.to_str().unwrap(),
+            "-o",
+            dump.to_str().unwrap()
+        ])
+        .status
+        .success()
+    );
+    std::fs::remove_file(dump.join("manifest.txt")).unwrap();
+
+    let output = run(&["check", dump.to_str().unwrap()]);
+    assert!(
+        output.status.success(),
+        "an older dump should still check: {output:?}"
+    );
+    assert!(
+        String::from_utf8_lossy(&output.stderr).contains("not verified"),
+        "the missing manifest should be called out"
+    );
+
+    let restored = sandbox.path("restored.db");
+    assert!(
+        run(&[
+            "import",
+            dump.to_str().unwrap(),
+            "-o",
+            restored.to_str().unwrap()
+        ])
+        .status
+        .success(),
+        "an older dump should still import"
+    );
+}

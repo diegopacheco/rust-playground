@@ -1,6 +1,6 @@
 <img src="images/logo.svg" alt="sqlite-manager" width="420">
 
-A Rust CLI that backs up, restores, verifies, queries and documents SQLite databases. It reads a `.db` file and writes a `schema.sql` plus a `data.sql` that together rebuild the database exactly, restores that dump into a fresh database, tells you whether a dump is still sound, opens a SQL shell over a database, and prints a data dictionary of everything in it.
+A Rust CLI that backs up, restores, verifies, queries and documents SQLite databases. It reads a `.db` file and writes a `schema.sql`, a `data.sql` and a `manifest.txt` that together rebuild the database exactly, restores that dump into a fresh database, tells you whether a dump is still sound, opens a SQL shell over a database, and prints a data dictionary of everything in it.
 
 The source database is never written to, locked, or moved.
 
@@ -10,7 +10,11 @@ The source database is never written to, locked, or moved.
 
 Schema objects come out of `sqlite_master` in dependency order. Row data is streamed a row at a time and written as `INSERT` statements with explicit column lists, so generated columns are skipped and FTS shadow tables never leak in. Triggers are dropped at the top of `data.sql` and recreated at the bottom, so replaying the data cannot fire them a second time and corrupt the restore.
 
-`import` and `check` replay a dump one statement at a time, using SQLite's own parser to decide where each statement ends. `check` replays into a throwaway database, then runs `integrity_check` and `foreign_key_check` and exits non-zero if anything is wrong.
+The database header travels with the schema. `user_version` and `application_id` are written into `schema.sql` when a database has set them, so a restore is stamped the same way the original was and a migration counter cannot silently reset to zero. A database that set neither carries neither, so ordinary dumps stay clean.
+
+`dump` also writes a `manifest.txt` recording how many rows the source held in every table and how many objects its schema defined. Replaying a dump proves only that the SQL parses; the manifest is what proves nothing went missing between the two.
+
+`import` and `check` replay a dump one statement at a time, using SQLite's own parser to decide where each statement ends. `check` replays into a throwaway database, then runs `integrity_check` and `foreign_key_check`, compares every table against the manifest, and exits non-zero if anything is wrong. A dump written before manifests existed still checks; it just says the counts were not verified.
 
 ## Architecture
 
@@ -18,16 +22,16 @@ Schema objects come out of `sqlite_master` in dependency order. Row data is stre
 
 ## Features
 
-- **`dump`** — writes `schema.sql` and `data.sql` from a database, or from the only database it finds in a directory. Split files let you review the schema without wading through millions of inserts.
+- **`dump`** — writes `schema.sql`, `data.sql` and `manifest.txt` from a database, or from the only database it finds in a directory. Split files let you review the schema without wading through millions of inserts.
 - **`import`** — rebuilds a database from a dump directory. Refuses to overwrite an existing file unless `--force` is passed, so a restore can never silently destroy a database.
-- **`check`** — replays a dump into a scratch database and runs integrity and foreign key checks. A backup you have never restored is not a backup.
+- **`check`** — replays a dump into a scratch database, runs integrity and foreign key checks, and compares every table against `manifest.txt`. A backup you have never restored is not a backup, and a backup that restores one row short is worse than one that fails outright.
 - **`sql`** — an interactive shell with SQL syntax highlighting, line numbers, tab completion over keywords, tables and columns, multi-line statements and box-drawn result tables. Read only unless `--write` is passed.
 - **`tables;`, `desc table NAME;`, `help;`** — shell commands that read like SQL rather than dot commands, so the shell answers "what is in here" without leaving it.
 - **`dict`** — the data dictionary: every table with its columns, types, constraints, indexes, views, triggers and the full relation graph. Answers "what is in this database" in one screen.
 - **`--safe`** — read only mode. It refuses `import` and `sql --write`, so no database file is ever opened for writing. It may be given anywhere on the line.
 - **Never touches the source** — read only and immutable by default, private copy when a log is hot, and a guard that refuses to write output over the database being read.
 - **Fine grained progress** — a bar per stage and a nested bar per table with live row counts, so a long dump tells you exactly which table it is on.
-- **Faithful values** — blobs as hex, invalid UTF-8 as a cast blob, full float precision, doubled quotes in text and identifiers, `sqlite_sequence` restored so `AUTOINCREMENT` continues where it left off.
+- **Faithful values** — blobs as hex, invalid UTF-8 as a cast blob, full float precision, doubled quotes in text and identifiers, `sqlite_sequence` restored so `AUTOINCREMENT` continues where it left off, and `user_version` and `application_id` carried across.
 
 ## Stack
 
@@ -44,9 +48,9 @@ Argument parsing is hand written rather than pulled from a crate; the surface is
 ```
 sqlite-manager [--safe] <COMMAND> [ARGS]
 
-dump   [PATH] [-o DIR]     read a database and write schema.sql and data.sql
+dump   [PATH] [-o DIR]     read a database and write schema.sql, data.sql, manifest.txt
 import <DIR> [-o FILE]     rebuild a database from a dump directory (--force to overwrite)
-check  <DIR>               rebuild a dump in a scratch database and report if it is sound
+check  <DIR>               rebuild a dump in a scratch database, verify it against manifest.txt
 sql    [PATH] [--write]    SQL shell with highlighting, line numbers, completion, tables
 dict   [PATH]              print the data dictionary
 help                       print the help
@@ -107,6 +111,8 @@ The app in `sample/` is a plain REST service on `http://localhost:7777`.
 
 - **`Source`** wraps the read-only connection and owns an optional `Workspace`. Field order matters: the connection is declared before the workspace so it is dropped first, and the scratch directory is only removed once SQLite has let go of it.
 - **`Workspace`** is a temp directory that deletes itself on `Drop`. Both the hot-log copy and `check`'s scratch database use it, so no cleanup path can be forgotten.
+- **The manifest is written from the source, not from what was dumped.** Counting the rows the dump wrote would only confirm the dump agrees with itself; counting the source is what turns `check` into a real comparison.
+- **A missing `manifest.txt` is not an error.** `check` reports that counts were not verified and carries on, so dumps taken by an older build keep working.
 - **Statement splitting uses `sqlite3_complete`**, not a `;` scan. A `CREATE TRIGGER ... BEGIN ... END;` body and a multi-line string literal both contain semicolons that do not end the statement.
 - **Triggers are guarded in `data.sql`**, not reordered in `schema.sql`. `schema.sql` stays a complete, readable description of the schema, and the data file stays safe to replay on its own.
 - **`PRAGMA table_list` classifies tables** so FTS shadow tables are excluded from both the schema and the data, while the virtual table itself is dumped and rebuilt normally.
@@ -117,7 +123,7 @@ The app in `sample/` is a plain REST service on `http://localhost:7777`.
 
 ```bash
 ./build.sh          # fmt check, clippy with warnings denied, release build
-./test.sh           # 14 unit tests and 8 end-to-end tests
+./test.sh           # 17 unit tests and 12 end-to-end tests
 ./install.sh        # builds and installs to /usr/local/bin (BIN_DIR= to override)
 ./uninstall.sh      # removes it again
 ./run.sh dump ./my.db -o backup

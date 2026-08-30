@@ -11,7 +11,8 @@ USAGE:
     sqlite-manager [--safe] <COMMAND> [ARGS]
 
 COMMANDS:
-    📦 dump   [PATH] [-o DIR]   read a database and write schema.sql and data.sql
+    📦 dump   [PATH] [-o DIR]   read a database and write schema.sql, data.sql
+                               and manifest.txt
                                PATH is a database file or a directory to search,
                                and defaults to the current directory
                                -o defaults to ./dump
@@ -21,7 +22,8 @@ COMMANDS:
                                --force overwrites an existing target
 
     🔎 check  <DIR>             rebuild a dump in a scratch database and report
-                               whether it is sound
+                               whether it is sound, comparing every table
+                               against the row counts in manifest.txt
 
     🐚 sql    [PATH] [--write]  open a SQL shell with syntax highlighting,
                                line numbers, tab completion and table output

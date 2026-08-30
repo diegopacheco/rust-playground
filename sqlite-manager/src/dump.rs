@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 use crate::data;
 use crate::db::{SchemaObject, Source};
 use crate::error::DumpError;
+use crate::manifest::{self, Manifest};
 use crate::progress::Progress;
 use crate::report;
 use crate::schema;
@@ -14,7 +15,8 @@ pub fn run(database: &Path, output: &Path) -> Result<(), DumpError> {
 
     let schema_path = output.join("schema.sql");
     let data_path = output.join("data.sql");
-    guard_source(&source, &[&schema_path, &data_path])?;
+    let manifest_path = output.join(manifest::FILE);
+    guard_source(&source, &[&schema_path, &data_path, &manifest_path])?;
 
     let progress = Progress::new();
     progress.note(&format!("📦 source  {}", source.path().display()));
@@ -27,7 +29,7 @@ pub fn run(database: &Path, output: &Path) -> Result<(), DumpError> {
     }
 
     let objects = source.schema_objects()?;
-    schema::write(&objects, &schema_path, &progress)?;
+    schema::write(&objects, &source.header()?, &schema_path, &progress)?;
 
     let triggers: Vec<&SchemaObject> = objects
         .iter()
@@ -35,6 +37,7 @@ pub fn run(database: &Path, output: &Path) -> Result<(), DumpError> {
         .collect();
     let tables = source.tables()?;
     let rows = data::write(&source, &tables, &triggers, &data_path, &progress)?;
+    Manifest::of(objects.len(), &tables).write(&manifest_path)?;
 
     progress.note("");
     progress.note(&format!(
@@ -47,6 +50,11 @@ pub fn run(database: &Path, output: &Path) -> Result<(), DumpError> {
         report::size(&data_path),
         report::count(tables.len(), "table"),
         report::count(rows as usize, "row")
+    ));
+    progress.note(&format!(
+        "🧮 manifest.txt{:>9}  {}",
+        report::size(&manifest_path),
+        report::count(tables.len(), "counted table")
     ));
     Ok(())
 }

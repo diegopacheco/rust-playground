@@ -41,6 +41,11 @@ pub struct Table {
     pub rows: u64,
 }
 
+pub struct Header {
+    pub user_version: i64,
+    pub application_id: i64,
+}
+
 struct Entry {
     schema: String,
     name: String,
@@ -109,6 +114,17 @@ impl Source {
 
     pub fn merged_log(&self) -> bool {
         self.workspace.is_some()
+    }
+
+    pub fn header(&self) -> Result<Header, DumpError> {
+        Ok(Header {
+            user_version: self
+                .connection
+                .query_row("PRAGMA user_version", [], |row| row.get(0))?,
+            application_id: self
+                .connection
+                .query_row("PRAGMA application_id", [], |row| row.get(0))?,
+        })
     }
 
     pub fn schema_objects(&self) -> Result<Vec<SchemaObject>, DumpError> {
