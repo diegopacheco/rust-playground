@@ -1,0 +1,60 @@
+sqlite-manager/tests/roundtrip.rs
+  s_a0ab70a2178ff4::t_607cd699e1b405 713,725
+  s_a0ab70a2178ff4::t_4e42471bfcedf6 38,55-59,407-418,633-712,714-724,726-731,736-761
+  s_89fc4c6bd701f4::t_69469b80cb931d 762-831
+  s_a0ab70a2178ff4::t_f41e1c4dddfb4b 732-735
+sqlite-manager/src/command.rs
+  s_89fc4c6bd701f4::t_32b58d12bb1fac 1-128
+sqlite-manager/src/cli.rs
+  s_a0ab70a2178ff4::t_18c4f59daba0d4 32-36,71-75,84-88,165-195,198-206
+  s_a0ab70a2178ff4::t_8da9038e405a0c 45-47
+  s_a0ab70a2178ff4::t_cacf1625a9d37b 196-197
+  s_a0ab70a2178ff4::t_0a6605511385a1 207-209
+sqlite-manager/src/query.rs
+  s_a0ab70a2178ff4::t_a5473192fde5a2 1-89
+sqlite-manager/src/shell.rs
+  s_a0ab70a2178ff4::t_67532f3848a1f1 5,17,22,74
+  s_89fc4c6bd701f4::t_e43a9c3eb4f208 14,53-58,178
+sqlite-manager/src/main.rs
+  s_a0ab70a2178ff4::t_eec0b39f806499 14,16,61-65
+  s_89fc4c6bd701f4::t_1e6adbcc2da54d 3
+sqlite-manager/src/error.rs
+  s_89fc4c6bd701f4::t_1e6adbcc2da54d 77-81
+  s_a0ab70a2178ff4::t_ba70666af6d9c3 20,76
+  s_89fc4c6bd701f4::t_f34de363e2e1ba 82
+sqlite-manager/README.md
+  s_a0ab70a2178ff4::t_decfdaad5518ca 3,29,56,61,78-117,119-128
+  s_a0ab70a2178ff4::t_b923aed1cd700c 180
+  s_a0ab70a2178ff4::t_81e43cfad179e6 144,173
+  s_89fc4c6bd701f4::t_62b47fa4b3ca4d 30,118
+sqlite-manager/src/script.rs
+  s_a0ab70a2178ff4::t_82cf1135acedab 91-94,97-98,100,102-120
+  s_89fc4c6bd701f4::t_1e6adbcc2da54d 95-96,99,101
+sqlite-manager/src/pipe.rs
+  s_89fc4c6bd701f4::t_1e6adbcc2da54d 4,23-26
+  s_a0ab70a2178ff4::t_3b0e72ac68a2d0 1-3,5-22,27-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f484e6d4b95aff2b444055dfb95de16dc5c34567",
+  "prompts": {},
+  "sessions": {
+    "s_89fc4c6bd701f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "64630b5f-cbfc-424e-94c3-a13cc77e3a97",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    },
+    "s_a0ab70a2178ff4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "17f2b514-0472-4281-a4d9-11e2925dc360",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
