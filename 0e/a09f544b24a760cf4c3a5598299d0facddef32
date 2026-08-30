@@ -1,0 +1,30 @@
+sqlite-manager/images/logo-small.svg
+  s_a0ab70a2178ff4::t_4c97262f0a6604 1-51
+sqlite-manager/images/logo.svg
+  s_7b900eeeaf063c::t_73e3bede710b73 13,26-33,35,37-44
+  s_7b900eeeaf063c::t_0bc86ad3c28eb6 3-10,14-18,22,25,34,36,45,48-50
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "0ea09f544b24a760cf4c3a5598299d0facddef32",
+  "prompts": {},
+  "sessions": {
+    "s_7b900eeeaf063c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a4a59272-c3ad-4373-a976-d58d5916bee7",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    },
+    "s_a0ab70a2178ff4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "17f2b514-0472-4281-a4d9-11e2925dc360",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
