@@ -1,0 +1,45 @@
+turbokv-fun/README.md
+  s_86e1395ad3bb61::t_c779d7ee661f2a 1-95
+turbokv-fun/src/lib.rs
+  s_86e1395ad3bb61::t_497c14c3992dea 33-38
+  s_86e1395ad3bb61::t_0d1139166351e3 1-32,39-64
+turbokv-fun/Cargo.toml
+  s_86e1395ad3bb61::t_635229c7d52034 2-10
+  s_86e1395ad3bb61::t_19583186da571c 1
+turbokv-fun/.gitignore
+  s_86e1395ad3bb61::t_2108a7899bc57b 1-2
+turbokv-fun/.cargo/config.toml
+  s_86e1395ad3bb61::t_635229c7d52034 1-11
+turbokv-fun/tests/store_test.rs
+  s_86e1395ad3bb61::t_2cda446b660670 1-116
+turbokv-fun/build.sh
+  s_86e1395ad3bb61::t_8c17db76204f40 1-3
+turbokv-fun/run.sh
+  s_86e1395ad3bb61::t_8c17db76204f40 2-3
+  s_86e1395ad3bb61::t_e65f4b2e24446e 1
+turbokv-fun/docs/architecture.svg
+  s_86e1395ad3bb61::t_a7b247ba33bdd0 1-18,20-32,35-46,48-55,60-61
+  s_86e1395ad3bb61::t_f59725681dc8a4 19,33-34,47,56-59
+turbokv-fun/test.sh
+  s_86e1395ad3bb61::t_8c17db76204f40 1-3
+turbokv-fun/src/main.rs
+  s_86e1395ad3bb61::t_497c14c3992dea 27-29
+  s_86e1395ad3bb61::t_0d1139166351e3 1-26,30-36
+  s_86e1395ad3bb61::t_dc84c53c2a89c1 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ff5c08a85963082643733080a117b5a48f08fc98",
+  "prompts": {},
+  "sessions": {
+    "s_86e1395ad3bb61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "7d21c553-3813-40d4-8439-6d41ab0b848c",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
