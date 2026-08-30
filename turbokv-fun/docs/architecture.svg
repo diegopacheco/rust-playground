@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="500" viewBox="0 0 1040 500" font-family="Caveat, 'Comic Sans MS', cursive">
+  <defs>
+    <filter id="wobble">
+      <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a4a4a"/>
+    </marker>
+  </defs>
+
+  <rect width="1040" height="500" fill="#fdfdf8"/>
+  <text x="40" y="36" font-size="30" fill="#3a3a3a">turbokv-fun architecture</text>
+
+  <g filter="url(#wobble)" stroke="#4a4a4a" stroke-width="2.5" fill="none">
+    <rect x="40" y="70" width="210" height="80" rx="10" fill="#dbeafe"/>
+    <rect x="320" y="70" width="230" height="80" rx="10" fill="#dcfce7"/>
+    <rect x="620" y="70" width="210" height="80" rx="10" fill="#fef3c7"/>
+    <rect x="45" y="250" width="265" height="80" rx="10" fill="#ede9fe"/>
+    <rect x="430" y="250" width="160" height="80" rx="10" fill="#fee2e2"/>
+    <rect x="640" y="250" width="170" height="80" rx="10" fill="#fee2e2"/>
+    <rect x="860" y="250" width="150" height="80" rx="10" fill="#fee2e2"/>
+    <rect x="620" y="400" width="210" height="70" rx="10" fill="#e5e7eb"/>
+  </g>
+
+  <g font-size="25" fill="#2f2f2f" text-anchor="middle">
+    <text x="145" y="105">src/main.rs</text>
+    <text x="145" y="132" font-size="19" fill="#5a5a5a">prints a scenario</text>
+    <text x="435" y="105">Store (src/lib.rs)</text>
+    <text x="435" y="132" font-size="19" fill="#5a5a5a">str keys, str values</text>
+    <text x="725" y="105">turbokv::Db</text>
+    <text x="725" y="132" font-size="19" fill="#5a5a5a">durable() preset</text>
+    <text x="177" y="285" font-size="23">tests/store_test.rs</text>
+    <text x="177" y="312" font-size="19" fill="#5a5a5a">6 integration tests</text>
+    <text x="510" y="288">WAL</text>
+    <text x="510" y="313" font-size="19" fill="#5a5a5a">append on write</text>
+    <text x="725" y="288">MemTable</text>
+    <text x="725" y="313" font-size="19" fill="#5a5a5a">skiplist in RAM</text>
+    <text x="935" y="288">SSTables</text>
+    <text x="935" y="313" font-size="19" fill="#5a5a5a">LZ4 blocks</text>
+    <text x="725" y="443">./data directory</text>
+  </g>
+
+  <g filter="url(#wobble)" stroke="#4a4a4a" stroke-width="2.5" fill="none" marker-end="url(#arrow)">
+    <path d="M 250 110 L 315 110"/>
+    <path d="M 550 110 L 615 110"/>
+    <path d="M 250 250 L 350 155"/>
+    <path d="M 690 155 L 530 245"/>
+    <path d="M 725 155 L 725 245"/>
+    <path d="M 790 155 L 900 245"/>
+    <path d="M 510 335 L 660 398"/>
+    <path d="M 725 335 L 725 396"/>
+    <path d="M 935 335 L 790 398"/>
+  </g>
+
+  <g font-size="20" fill="#6b6b6b" text-anchor="middle">
+    <text x="282" y="98">calls</text>
+    <text x="582" y="98">uses</text>
+    <text x="255" y="205">asserts</text>
+  </g>
+</svg>
