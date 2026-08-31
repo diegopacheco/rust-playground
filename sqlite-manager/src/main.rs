@@ -59,10 +59,10 @@ fn run() -> Result<(), DumpError> {
             safe,
         } => shell::run(&database, write, safe),
         Command::Pipe {
-            database,
+            source,
             statement,
             write,
-        } => pipe::run(&database, statement.as_deref(), write),
+        } => pipe::run(&source, statement.as_deref(), write),
         Command::Dictionary { database } => dictionary::run(&database),
     }
 }

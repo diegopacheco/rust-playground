@@ -1,5 +1,6 @@
 use std::path::{Path, PathBuf};
 
+use crate::dumpfiles::DumpFiles;
 use crate::error::DumpError;
 
 const EXTENSIONS: [&str; 4] = ["db", "sqlite", "sqlite3", "db3"];
@@ -30,9 +31,14 @@ COMMANDS:
                                read only unless --write is passed
 
     🚰 sql-pipe <PATH> [SQL]    run SQL once and print the result, no shell
+                               PATH is a database file, a directory to search,
+                               or a dump directory, which is rebuilt in a
+                               scratch database and queried there
                                SQL is the rest of the line, or stdin when the
                                rest of the line is empty
-                               read only unless --write is given before PATH
+                               read only unless --write is given before PATH,
+                               which a dump directory refuses, since its
+                               scratch database is thrown away
 
     📖 dict   [PATH]            print the data dictionary: tables, columns,
                                indexes, views, triggers and relations
@@ -49,6 +55,11 @@ OPTIONS:
 Dumping never writes to, locks, or moves the source database.
 Importing never writes to the dump it reads.
 ";
+
+pub enum Source {
+    Database(PathBuf),
+    Dump(PathBuf),
+}
 
 pub enum Command {
     Dump {
@@ -69,7 +80,7 @@ pub enum Command {
         safe: bool,
     },
     Pipe {
-        database: PathBuf,
+        source: Source,
         statement: Option<String>,
         write: bool,
     },
@@ -195,13 +206,18 @@ fn pipe(head: &[String], tail: &[String]) -> Result<Command, DumpError> {
     }
     let database =
         database.ok_or_else(|| DumpError::Usage("sql-pipe needs a database".to_string()))?;
-    if !database.is_file() {
-        return Err(DumpError::MissingDatabase(database));
+    let source = locate(&database)?;
+    if write && matches!(source, Source::Dump(_)) {
+        return Err(DumpError::Usage(
+            "a dump directory is rebuilt in a scratch database, so --write has nothing \
+             to keep, import it first"
+                .to_string(),
+        ));
     }
 
     let words: Vec<&str> = rest.map(String::as_str).collect();
     Ok(Command::Pipe {
-        database,
+        source,
         statement: (!words.is_empty()).then(|| words.join(" ")),
         write,
     })
@@ -252,6 +268,19 @@ impl Options {
         }
         Ok(options)
     }
+}
+
+fn locate(target: &Path) -> Result<Source, DumpError> {
+    if target.is_file() {
+        return Ok(Source::Database(target.to_path_buf()));
+    }
+    if target.is_dir() {
+        if DumpFiles::present(target) {
+            return Ok(Source::Dump(target.to_path_buf()));
+        }
+        return discover(target).map(Source::Database);
+    }
+    Err(DumpError::MissingDatabase(target.to_path_buf()))
 }
 
 fn resolve(source: Option<&Path>) -> Result<PathBuf, DumpError> {

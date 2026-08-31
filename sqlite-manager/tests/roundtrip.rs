@@ -829,3 +829,54 @@ fn a_failing_statement_is_reported_once() {
         "the statement is printed twice: {message}"
     );
 }
+
+#[test]
+fn sql_pipe_queries_a_dump_directory_as_if_it_were_the_database() {
+    let sandbox = Sandbox::new("pipe-dump");
+    let source = sandbox.path("shop.db");
+    build_source(&source);
+
+    let dump = sandbox.path("dump");
+    assert!(
+        run(&[
+            "dump",
+            source.to_str().unwrap(),
+            "-o",
+            dump.to_str().unwrap()
+        ])
+        .status
+        .success()
+    );
+
+    let query = "SELECT name FROM author ORDER BY id";
+    let from_database = run(&["sql-pipe", source.to_str().unwrap(), query]);
+    let from_dump = run(&["sql-pipe", dump.to_str().unwrap(), query]);
+    assert!(
+        from_dump.status.success(),
+        "a dump directory must be queryable: {}",
+        String::from_utf8_lossy(&from_dump.stderr)
+    );
+    assert_eq!(
+        String::from_utf8_lossy(&from_database.stdout),
+        String::from_utf8_lossy(&from_dump.stdout),
+        "a dump must answer exactly what the database it came from answers"
+    );
+
+    let listed = run(&["sql-pipe", dump.to_str().unwrap(), "tables;"]);
+    assert!(
+        String::from_utf8_lossy(&listed.stdout).contains("author"),
+        "the shell commands must see the rebuilt dump too"
+    );
+
+    let refused = run(&["sql-pipe", "--write", dump.to_str().unwrap(), "SELECT 1"]);
+    assert!(
+        !refused.status.success(),
+        "writing to a dump would be thrown away, so it must be refused"
+    );
+
+    assert_eq!(
+        std::fs::read_dir(&dump).unwrap().count(),
+        3,
+        "querying a dump must not add files to it"
+    );
+}

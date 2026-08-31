@@ -10,6 +10,10 @@ pub struct DumpFiles {
 }
 
 impl DumpFiles {
+    pub fn present(directory: &Path) -> bool {
+        directory.join("schema.sql").is_file() && directory.join("data.sql").is_file()
+    }
+
     pub fn locate(directory: &Path) -> Result<Self, DumpError> {
         let manifest = directory.join(manifest::FILE);
         let files = Self {

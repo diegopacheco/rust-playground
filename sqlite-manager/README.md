@@ -26,7 +26,7 @@ The database header travels with the schema. `user_version` and `application_id`
 - **`import`** — rebuilds a database from a dump directory. Refuses to overwrite an existing file unless `--force` is passed, so a restore can never silently destroy a database.
 - **`check`** — replays a dump into a scratch database, runs integrity and foreign key checks, and compares every table against `manifest.txt`. A backup you have never restored is not a backup, and a backup that restores one row short is worse than one that fails outright.
 - **`sql`** — an interactive shell with SQL syntax highlighting, line numbers, tab completion over keywords, tables and columns, multi-line statements and box-drawn result tables. Read only unless `--write` is passed.
-- **`sql-pipe`** — the same engine without the shell: one statement, or a whole `.sql` file on stdin, printed and gone. Read only unless `--write` is passed, and a failing statement exits non-zero so a pipeline notices.
+- **`sql-pipe`** — the same engine without the shell: one statement, or a whole `.sql` file on stdin, printed and gone. Reads a database file or a dump directory, which it rebuilds in a scratch database and throws away. Read only unless `--write` is passed, and a failing statement exits non-zero so a pipeline notices.
 - **`tables;`, `desc table NAME;`, `help;`** — commands that read like SQL rather than dot commands, so the shell answers "what is in here" without leaving it. `sql-pipe` understands the same ones.
 - **`dict`** — the data dictionary: every table with its columns, types, constraints, indexes, views, triggers and the full relation graph. Answers "what is in this database" in one screen.
 - **`--safe`** — read only mode. It refuses `import` and `sql --write`, so no database file is ever opened for writing. It may be given anywhere on the line.
@@ -54,6 +54,7 @@ import <DIR> [-o FILE]     rebuild a database from a dump directory (--force to 
 check  <DIR>               rebuild a dump in a scratch database, verify it against manifest.txt
 sql    [PATH] [--write]    SQL shell with highlighting, line numbers, completion, tables
 sql-pipe <PATH> [SQL]      run SQL once and print the result, no shell (--write before PATH)
+                           PATH is a database file or a dump directory
 dict   [PATH]              print the data dictionary
 help                       print the help
 version                    print the version
@@ -117,6 +118,12 @@ sqlite-manager sql-pipe sample/dbs/store.db < report.sql
 
 A file may hold several statements, on one line or many; they are split with SQLite's own parser and each result is printed in turn. `tables;`, `desc table NAME;` and `help;` work here as well as in the shell. A statement that fails prints to stderr and exits non-zero, so `set -e` and `&&` behave, and the statements after it do not run.
 
+The path may also be a dump directory. `schema.sql` and `data.sql` are rebuilt into a scratch database under the temp directory, the SQL runs there, and the scratch database is deleted on exit, so a backup answers questions without being imported first:
+
+```bash
+$ sqlite-manager sql-pipe ./backup "select count(*) from episodes"
+```
+
 Writes need `--write`, before the path:
 
 ```bash
@@ -126,6 +133,8 @@ $ sqlite-manager sql-pipe sample/dbs/store.db "delete from orders"
 $ sqlite-manager sql-pipe --write sample/dbs/store.db "delete from orders where id = 6"
 1 row changed
 ```
+
+A dump directory refuses `--write`, because the write would land in the scratch database and be thrown away on exit. Use `import` to turn the dump into a database you can keep, then write to that.
 
 ## Sample databases
 

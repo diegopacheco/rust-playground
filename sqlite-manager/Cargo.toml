@@ -1,6 +1,6 @@
 [package]
 name = "sqlite-manager"
-version = "1.0.0"
+version = "1.1.0"
 authors = ["Diego.Pacheco"]
 edition = "2024"
 rust-version = "1.98.0"
