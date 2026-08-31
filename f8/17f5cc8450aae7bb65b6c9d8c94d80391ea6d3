@@ -1,0 +1,37 @@
+sqlite-manager/src/pipe.rs
+  s_ea689f8f246432::t_f1a841e7036d68 30,49,65
+  s_ea689f8f246432::t_bd8c93102ab68a 68
+  s_ea689f8f246432::t_d4f2d805b4a357 4-6,8,10,13,15,27-29,31-34,36,40,47-48,50-64,66-67
+sqlite-manager/src/dumpfiles.rs
+  s_ea689f8f246432::t_080aaa07568f6f 13-16
+sqlite-manager/tests/roundtrip.rs
+  s_ea689f8f246432::t_896b44f0af1370 832-882
+sqlite-manager/Cargo.toml
+  s_ea689f8f246432::t_3c9f2d293e8d29 3
+sqlite-manager/src/cli.rs
+  s_ea689f8f246432::t_40dd6b95ef6786 3,34-36,59-63,83,209-215,220,273-284
+  s_ea689f8f246432::t_d60384791459e9 39-41
+  s_ea689f8f246432::t_fc1df96e22c37e 285
+sqlite-manager/README.md
+  s_ea689f8f246432::t_f74b9b168197dd 29,57,121-125
+  s_ea689f8f246432::t_d60384791459e9 137-138
+  s_ea689f8f246432::t_6c5c3a6b8ac379 126
+sqlite-manager/src/main.rs
+  s_ea689f8f246432::t_d4f2d805b4a357 62,65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f817f5cc8450aae7bb65b6c9d8c94d80391ea6d3",
+  "prompts": {},
+  "sessions": {
+    "s_ea689f8f246432": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "38ebcba0-2543-41eb-9317-71ee408c5cb6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
