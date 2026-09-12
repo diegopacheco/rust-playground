@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="800" viewBox="0 0 1040 800" font-family="Caveat, 'Comic Sans MS', 'Segoe Print', 'Bradley Hand', cursive">
+  <defs>
+    <filter id="w" x="-4%" y="-6%" width="108%" height="112%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="3" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.2" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <marker id="a" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M1 1 L10 6 L1 11" fill="none" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="800" fill="#fdfdfb"/>
+  <text x="520" y="44" font-size="34" fill="#23272f" text-anchor="middle">how the layers fit together</text>
+  <text x="520" y="72" font-size="21" fill="#6b7280" text-anchor="middle">each layer depends only on the traits of the one below it</text>
+
+  <g filter="url(#w)" stroke="#2b2b2b" stroke-width="2.4" stroke-linejoin="round">
+    <rect x="330" y="96"  width="380" height="66" rx="10" fill="#ffe8cc"/>
+    <rect x="120" y="206" width="360" height="86" rx="10" fill="#d8f3dc"/>
+    <rect x="560" y="206" width="360" height="86" rx="10" fill="#dbe4ff"/>
+    <rect x="330" y="336" width="380" height="86" rx="10" fill="#ffd6e0"/>
+    <rect x="120" y="466" width="800" height="94" rx="10" fill="#fff3bf"/>
+    <rect x="120" y="604" width="360" height="72" rx="10" fill="#d0ebff"/>
+    <rect x="560" y="604" width="360" height="72" rx="10" fill="#e5dbff"/>
+    <rect x="330" y="716" width="380" height="62" rx="10" fill="#e9ecef"/>
+  </g>
+
+  <g fill="#23272f" text-anchor="middle">
+    <text x="520" y="126" font-size="27">app</text>
+    <text x="520" y="150" font-size="19" fill="#5b6370">GameLoop  ·  Config</text>
+
+    <text x="300" y="238" font-size="27">input</text>
+    <text x="300" y="262" font-size="19" fill="#5b6370">InputSource · KeyMap</text>
+    <text x="300" y="283" font-size="18" fill="#5b6370">key press to Action</text>
+
+    <text x="740" y="238" font-size="27">render</text>
+    <text x="740" y="262" font-size="19" fill="#5b6370">Canvas · View</text>
+    <text x="740" y="283" font-size="18" fill="#5b6370">Snapshot to glyphs</text>
+
+    <text x="520" y="368" font-size="27">game</text>
+    <text x="520" y="392" font-size="19" fill="#5b6370">Engine · Clock · Snapshot</text>
+    <text x="520" y="413" font-size="18" fill="#5b6370">actions in, state out</text>
+
+    <text x="520" y="498" font-size="27">rules</text>
+    <text x="520" y="524" font-size="19" fill="#5b6370">RuleSet bundles: Randomizer · ScoringRule · GravityCurve</text>
+    <text x="520" y="548" font-size="19" fill="#5b6370">LevelCurve · KickTable · Rng</text>
+
+    <text x="300" y="636" font-size="27">board</text>
+    <text x="300" y="662" font-size="19" fill="#5b6370">Playfield · Cell</text>
+
+    <text x="740" y="636" font-size="27">piece</text>
+    <text x="740" y="662" font-size="19" fill="#5b6370">Shape · Tetromino</text>
+
+    <text x="520" y="746" font-size="27">geometry</text>
+    <text x="520" y="770" font-size="19" fill="#5b6370">Point · Offset · Rotation · Spin</text>
+  </g>
+
+  <g filter="url(#w)" fill="none" stroke="#2b2b2b" stroke-width="2.4" stroke-linecap="round" marker-end="url(#a)">
+    <path d="M430 162 L300 200"/>
+    <path d="M610 162 L740 200"/>
+    <path d="M300 292 L470 332"/>
+    <path d="M740 292 L570 332"/>
+    <path d="M520 422 L520 462"/>
+    <path d="M400 560 L300 600"/>
+    <path d="M640 560 L740 600"/>
+    <path d="M300 676 L450 712"/>
+    <path d="M740 676 L590 712"/>
+  </g>
+
+  <g filter="url(#w)" fill="none" stroke="#9aa0a6" stroke-width="2" stroke-dasharray="7 6" stroke-linecap="round">
+    <path d="M960 240 C1000 300 1000 420 960 470"/>
+  </g>
+  <text x="986" y="360" font-size="18" fill="#6b7280" text-anchor="middle" transform="rotate(90 986 360)">no clock, keyboard or terminal below app</text>
+</svg>

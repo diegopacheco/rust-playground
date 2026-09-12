@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="200" viewBox="0 0 720 200" font-family="Caveat, 'Comic Sans MS', 'Segoe Print', 'Bradley Hand', cursive">
+  <defs>
+    <filter id="wob" x="-8%" y="-20%" width="116%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+  <rect width="720" height="200" rx="16" fill="#fdfdfb"/>
+  <g filter="url(#wob)" stroke="#2b2b2b" stroke-width="2.6" stroke-linejoin="round">
+    <rect x="40"  y="46"  width="34" height="34" fill="#7ad7e0"/>
+    <rect x="74"  y="46"  width="34" height="34" fill="#7ad7e0"/>
+    <rect x="108" y="46"  width="34" height="34" fill="#7ad7e0"/>
+    <rect x="142" y="46"  width="34" height="34" fill="#7ad7e0"/>
+    <rect x="40"  y="110" width="34" height="34" fill="#f6c453"/>
+    <rect x="74"  y="110" width="34" height="34" fill="#f6c453"/>
+    <rect x="108" y="110" width="34" height="34" fill="#c3a6f0"/>
+    <rect x="142" y="110" width="34" height="34" fill="#8fbcf7"/>
+  </g>
+  <g filter="url(#wob)">
+    <text x="215" y="98" font-size="64" fill="#23272f">tetris-tui</text>
+    <text x="217" y="140" font-size="27" fill="#5b6370">a modular, trait-driven Tetris in Rust</text>
+    <line x1="215" y1="112" x2="640" y2="112" stroke="#2b2b2b" stroke-width="2.2" stroke-linecap="round"/>
+  </g>
+</svg>

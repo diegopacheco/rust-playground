@@ -1,0 +1,39 @@
+[package]
+name = "tetris-tui"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.98"
+description = "A modular, trait-driven TUI Tetris"
+license = "MIT"
+readme = "README.md"
+
+[dependencies]
+crossterm = "0.29"
+
+[lib]
+name = "tetris"
+path = "src/lib.rs"
+
+[[bin]]
+name = "tetris-tui"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+
+[lints.rust]
+missing_docs = "warn"
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+trivially_copy_pass_by_ref = "allow"
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+cast_lossless = "allow"
+similar_names = "allow"
