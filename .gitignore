@@ -21,3 +21,23 @@ stale_outputs_checked
 
 *.so
 *.so.o
+*.jar
+*.war
+.gradle/
+build/
+.bsp/
+.metals/
+.bloop/
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+node_modules/
+*.o
+*.dylib
+*.out
+!gradle-wrapper.jar
+!maven-wrapper.jar
+.scala-build/
