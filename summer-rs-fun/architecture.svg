@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&amp;display=swap');
+      text { font-family: 'Caveat', 'Comic Sans MS', cursive; fill: #1e1e1e; text-anchor: middle; }
+      .title { font-size: 26px; font-weight: 700; }
+      .note { font-size: 19px; }
+      .label { font-size: 18px; fill: #495057; }
+      .box { stroke: #1e1e1e; stroke-width: 2.2; filter: url(#wobble); }
+      .arrow { stroke: #1e1e1e; stroke-width: 2.2; fill: none; marker-end: url(#head); filter: url(#wobble); }
+    </style>
+    <filter id="wobble" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+    <marker id="head" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M1,1 L11,6 L1,11" fill="none" stroke="#1e1e1e" stroke-width="2"/>
+    </marker>
+  </defs>
+  <rect width="960" height="420" fill="#ffffff"/>
+
+  <rect class="box" x="30" y="60" width="150" height="90" rx="14" fill="#ffec99"/>
+  <text class="title" x="105" y="100">HTTP client</text>
+  <text class="note" x="105" y="128">JSON requests</text>
+
+  <rect class="box" x="270" y="60" width="180" height="90" rx="14" fill="#a5d8ff"/>
+  <text class="title" x="360" y="100">WebPlugin</text>
+  <text class="note" x="360" y="128">axum server</text>
+
+  <rect class="box" x="540" y="60" width="180" height="90" rx="14" fill="#b2f2bb"/>
+  <text class="title" x="630" y="100">routes.rs</text>
+  <text class="note" x="630" y="128">route macros</text>
+
+  <rect class="box" x="540" y="280" width="180" height="90" rx="14" fill="#d0bfff"/>
+  <text class="title" x="630" y="320">TaskService</text>
+  <text class="note" x="630" y="348">injected Service</text>
+
+  <rect class="box" x="800" y="280" width="140" height="90" rx="14" fill="#ffc9c9"/>
+  <text class="title" x="870" y="320">TaskStore</text>
+  <text class="note" x="870" y="348">in memory</text>
+
+  <rect class="box" x="270" y="280" width="180" height="90" rx="14" fill="#ffd8a8"/>
+  <text class="title" x="360" y="320">config/app.toml</text>
+  <text class="note" x="360" y="348">port and app-info</text>
+
+  <path class="arrow" d="M180,105 L266,105"/>
+  <text class="label" x="223" y="92">request</text>
+
+  <path class="arrow" d="M450,105 L536,105"/>
+  <text class="label" x="493" y="92">dispatch</text>
+
+  <path class="arrow" d="M630,150 L630,276"/>
+  <text class="label" x="690" y="220">Component</text>
+
+  <path class="arrow" d="M720,325 L796,325"/>
+  <text class="label" x="758" y="312">lock</text>
+
+  <path class="arrow" d="M360,280 L360,154"/>
+  <text class="label" x="318" y="220">binds</text>
+
+  <path class="arrow" d="M450,300 L560,154"/>
+  <text class="label" x="478" y="220">Config</text>
+</svg>

@@ -1,0 +1,6 @@
+[web]
+port = 8080
+
+[app-info]
+name = "summer-rs-fun"
+greeting = "Hello from summer-rs"

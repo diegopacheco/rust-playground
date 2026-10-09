@@ -1,0 +1,11 @@
+[package]
+name = "main"
+version = "1.0.0"
+authors = ["Diego.Pacheco"]
+edition = "2024"
+
+[dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+summer = "0.7.1"
+summer-web = "0.7.3"
+tokio = { version = "1.36", features = ["full"] } 
