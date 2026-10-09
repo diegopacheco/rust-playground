@@ -1,0 +1,52 @@
+summer-rs-fun/src/routes.rs
+  s_be5b78fb419b32::t_a4682952b2d13b 1-65
+summer-rs-fun/scripts/ports.env
+  s_be5b78fb419b32::t_70dbf481cb748e 1
+summer-rs-fun/README.md
+  s_be5b78fb419b32::t_c3e413580e709c 1-103
+summer-rs-fun/config/app.toml
+  s_be5b78fb419b32::t_a686a1db11ae09 1-6
+summer-rs-fun/Cargo.toml
+  s_be5b78fb419b32::t_2729d128926cd0 9-10
+  s_be5b78fb419b32::t_ea7be02156f6eb 8
+  s_be5b78fb419b32::t_d025bc96e5a9b7 1-7,11
+summer-rs-fun/src/task.rs
+  s_be5b78fb419b32::t_0fb8cdad22f092 1-122
+summer-rs-fun/scripts/start-all.sh
+  s_be5b78fb419b32::t_70dbf481cb748e 1-19
+summer-rs-fun/scripts/test-all.sh
+  s_be5b78fb419b32::t_70dbf481cb748e 1-10
+summer-rs-fun/src/config.rs
+  s_be5b78fb419b32::t_6e8628638439f4 1-9
+summer-rs-fun/scripts/stop-all.sh
+  s_be5b78fb419b32::t_70dbf481cb748e 1-16
+summer-rs-fun/scripts/common.sh
+  s_be5b78fb419b32::t_70dbf481cb748e 1-104
+summer-rs-fun/scripts/status.sh
+  s_be5b78fb419b32::t_70dbf481cb748e 1-18
+summer-rs-fun/.gitignore
+  s_be5b78fb419b32::t_ec49ea01c6c1d6 1
+summer-rs-fun/scripts/setup.sh
+  s_be5b78fb419b32::t_70dbf481cb748e 1-14
+summer-rs-fun/architecture.svg
+  s_be5b78fb419b32::t_3a83f05135de94 1-63
+summer-rs-fun/src/main.rs
+  s_be5b78fb419b32::t_8b860cf2ad5bae 1-11
+  s_be5b78fb419b32::t_560a9e143694e5 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "acb15d05f6ca7fab3f621d4ecf4b1f7637782273",
+  "prompts": {},
+  "sessions": {
+    "s_be5b78fb419b32": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4cf00904-952d-4ebc-8be7-de683c30d093",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
