@@ -1,0 +1,14 @@
+proa-fun/Cargo.toml
+  h_8e2c3875396153 9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e8e248ddd775121f0b54a95d04b546edeac7dc9f",
+  "prompts": {},
+  "humans": {
+    "h_8e2c3875396153": {
+      "author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
