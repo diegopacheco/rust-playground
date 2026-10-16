@@ -6,7 +6,7 @@ edition = "2024"
 rust-version = "1.99.1"
 
 [dependencies]
-axum = "0.7.9"
+axum = "0.8.9"
 proa_core = "0.3.0"
 proa_framework_axum = "0.3.0"
 proa_macros = "0.3.0"
