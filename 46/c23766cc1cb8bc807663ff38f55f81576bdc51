@@ -1,0 +1,71 @@
+proa-fun/.gitignore
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1
+proa-fun/public/styles.css
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1-7
+proa-fun/src/components/book_page.rs
+  s_01ab9ff71d17ce::t_78cf6cdc9e2610 1-22
+proa-fun/src/components/book_list.rs
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1-37
+proa-fun/architecture.svg
+  s_01ab9ff71d17ce::t_8b634ca4ff743d 1-11,13-33,35-37,39-41,43-71
+  s_01ab9ff71d17ce::t_9f57647523b905 12,34,38,42
+proa-fun/src/routes.rs
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1-17,19-57,59-73
+  s_01ab9ff71d17ce::t_78cf6cdc9e2610 18,58
+proa-fun/src/components/book_card.rs
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1-44
+proa-fun/scripts/ui.sh
+  s_01ab9ff71d17ce::t_e1047dec75ca30 1-6
+proa-fun/scripts/ports.env
+  s_01ab9ff71d17ce::t_e1047dec75ca30 1
+proa-fun/scripts/stop-all.sh
+  s_01ab9ff71d17ce::t_e1047dec75ca30 1-5
+proa-fun/scripts/start-all.sh
+  s_01ab9ff71d17ce::t_e1047dec75ca30 1-15
+proa-fun/README.md
+  s_01ab9ff71d17ce::t_da24f432948b7b 1-176
+proa-fun/src/books.rs
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1-35
+proa-fun/src/tests.rs
+  s_01ab9ff71d17ce::t_78cf6cdc9e2610 1-2,4-44,57-75
+  s_01ab9ff71d17ce::t_99c3f195c1e13e 3,45-56
+proa-fun/scripts/setup.sh
+  s_01ab9ff71d17ce::t_e1047dec75ca30 1-8
+proa-fun/scripts/common.sh
+  s_01ab9ff71d17ce::t_e1047dec75ca30 1-122
+proa-fun/scripts/status.sh
+  s_01ab9ff71d17ce::t_e1047dec75ca30 1-13
+proa-fun/src/layout.rs
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1-39
+proa-fun/scripts/test-all.sh
+  s_01ab9ff71d17ce::t_e1047dec75ca30 1-36
+proa-fun/src/main.rs
+  s_01ab9ff71d17ce::t_78cf6cdc9e2610 9-10
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1-8,11-18
+  s_01ab9ff71d17ce::t_2d79f3fa934106 19
+proa-fun/src/components/mod.rs
+  s_01ab9ff71d17ce::t_78cf6cdc9e2610 3
+  s_01ab9ff71d17ce::t_c17c2e2d2cd6e7 1-2
+proa-fun/Cargo.toml
+  s_01ab9ff71d17ce::t_248af8d27efc54 1-13
+proa-fun/rust-toolchain.toml
+  s_01ab9ff71d17ce::t_2bc65923a2c12c 1-2
+proa-fun/run.sh
+  s_01ab9ff71d17ce::t_1351614275febc 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "46c23766cc1cb8bc807663ff38f55f81576bdc51",
+  "prompts": {},
+  "sessions": {
+    "s_01ab9ff71d17ce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c4e16c7d-5137-41d1-b10b-41e7c2b2ac87",
+        "model": "unknown"
+      },
+      "human_author": "diegopacheco <diego.pacheco.it@gmail.com>"
+    }
+  }
+}
