@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 440" width="980" height="440">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&amp;display=swap');
+      text { font-family: 'Caveat', 'Comic Sans MS', cursive; fill: #1e1e1e; text-anchor: middle; }
+      .title { font-size: 26px; font-weight: 700; }
+      .note { font-size: 19px; }
+      .label { font-size: 18px; fill: #495057; }
+      .box { stroke: #1e1e1e; stroke-width: 2.2; filter: url(#wobble); }
+      .arrow { stroke: #1e1e1e; stroke-width: 2.2; fill: none; marker-end: url(#head); filter: url(#wobble); }
+    </style>
+    <filter id="wobble" filterUnits="userSpaceOnUse" x="0" y="0" width="980" height="440">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4"/>
+    </filter>
+    <marker id="head" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M1,1 L11,6 L1,11" fill="none" stroke="#1e1e1e" stroke-width="2"/>
+    </marker>
+  </defs>
+  <rect width="980" height="440" fill="#ffffff"/>
+
+  <rect class="box" x="20" y="175" width="180" height="90" rx="14" fill="#ffec99"/>
+  <text class="title" x="110" y="213">Client</text>
+  <text class="note" x="110" y="241">browser, curl, agent</text>
+
+  <rect class="box" x="290" y="175" width="190" height="90" rx="14" fill="#a5d8ff"/>
+  <text class="title" x="385" y="213">routes.rs</text>
+  <text class="note" x="385" y="241">axum + negotiate()</text>
+
+  <rect class="box" x="290" y="330" width="190" height="80" rx="14" fill="#ffd8a8"/>
+  <text class="title" x="385" y="365">books.rs</text>
+  <text class="note" x="385" y="392">static catalog</text>
+
+  <rect class="box" x="560" y="175" width="210" height="90" rx="14" fill="#d0bfff"/>
+  <text class="title" x="665" y="213">BookList / BookCard</text>
+  <text class="note" x="665" y="241">one typed component</text>
+
+  <rect class="box" x="560" y="30" width="210" height="80" rx="14" fill="#b2f2bb"/>
+  <text class="title" x="665" y="65">WebRenderSync</text>
+  <text class="note" x="665" y="92">html_sync! + RootDocument</text>
+
+  <rect class="box" x="560" y="330" width="210" height="80" rx="14" fill="#b2f2bb"/>
+  <text class="title" x="665" y="365">MdRenderSync</text>
+  <text class="note" x="665" y="392">md_sync!</text>
+
+  <rect class="box" x="830" y="30" width="130" height="80" rx="14" fill="#ffc9c9"/>
+  <text class="title" x="895" y="65">HTML</text>
+  <text class="note" x="895" y="92">text/html</text>
+
+  <rect class="box" x="830" y="330" width="130" height="80" rx="14" fill="#ffc9c9"/>
+  <text class="title" x="895" y="365">Markdown</text>
+  <text class="note" x="895" y="392">text/markdown</text>
+
+  <path class="arrow" d="M200,220 L286,220"/>
+  <text class="label" x="243" y="207">GET</text>
+
+  <path class="arrow" d="M480,220 L566,220"/>
+  <text class="label" x="523" y="207">render</text>
+
+  <path class="arrow" d="M480,370 L566,240"/>
+  <text class="label" x="500" y="300">data</text>
+
+  <path class="arrow" d="M665,175 L665,114"/>
+  <text class="label" x="720" y="148">Accept html</text>
+
+  <path class="arrow" d="M665,265 L665,326"/>
+  <text class="label" x="725" y="300">Accept md</text>
+
+  <path class="arrow" d="M760,70 L826,70"/>
+  <path class="arrow" d="M760,370 L826,370"/>
+</svg>
